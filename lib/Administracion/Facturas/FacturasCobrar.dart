@@ -1,4 +1,4 @@
-class FacturaCobrar {
+class FacturaPagar {
   final String nroFactura;
   final String proveedor;
   final double monto;
@@ -8,7 +8,7 @@ class FacturaCobrar {
   final double acuenta2;
   final double acuenta3;
 
-  FacturaCobrar({
+  FacturaPagar({
     required this.nroFactura,
     required this.proveedor,
     required this.monto,
@@ -36,9 +36,9 @@ class FacturaCobrar {
     };
   }
 
-  /// 🔹 Crea una instancia de `FacturaCobrar` a partir de un `Map`
-  factory FacturaCobrar.fromMap(Map<String, dynamic> map) {
-    return FacturaCobrar(
+  /// 🔹 Crea una instancia de `FacturaPagar` a partir de un `Map`
+  factory FacturaPagar.fromMap(Map<String, dynamic> map) {
+    return FacturaPagar(
       nroFactura: map['nroFactura'],
       proveedor: map['proveedor'],
       monto: map['monto'],
