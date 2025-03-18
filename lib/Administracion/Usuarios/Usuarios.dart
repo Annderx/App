@@ -12,6 +12,7 @@ class RegistroUsuarios extends StatefulWidget {
 
 class _RegistroUsuariosState extends State<RegistroUsuarios> {
   final _formKey = GlobalKey<FormState>();
+
   final _codigoUsuarioController = TextEditingController();
   final _nombreController = TextEditingController();
   final _codigoEmpleadoController = TextEditingController();
@@ -34,62 +35,30 @@ class _RegistroUsuariosState extends State<RegistroUsuarios> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Registro de Usuarios'),
+        backgroundColor: Colors.blueAccent,
+        foregroundColor: Colors.white,
+        centerTitle: true,
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(20.0),
         child: Form(
           key: _formKey,
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              TextFormField(
-                controller: _codigoUsuarioController,
-                decoration: const InputDecoration(
-                  labelText: 'Código Usuario',
-                  icon: Icon(Icons.vpn_key),
-                ),
-                enabled: false,
-              ),
-              TextFormField(
-                controller: _nombreController,
-                decoration: const InputDecoration(
-                  labelText: 'Nombre',
-                  icon: Icon(Icons.person),
-                ),
-              ),
-              TextFormField(
-                controller: _codigoEmpleadoController,
-                decoration: const InputDecoration(
-                  labelText: 'Código Empleado',
-                  icon: Icon(Icons.badge),
-                ),
-              ),
-              TextFormField(
-                controller: _tipoUsuarioController,
-                decoration: const InputDecoration(
-                  labelText: 'Tipo de Usuario',
-                  icon: Icon(Icons.account_circle),
-                ),
-              ),
-              TextFormField(
-                controller: _nombreUsuarioController,
-                decoration: const InputDecoration(
-                  labelText: 'Nombre de Usuario',
-                  icon: Icon(Icons.account_box),
-                ),
-              ),
-              TextFormField(
-                controller: _contrasenaController,
-                decoration: const InputDecoration(
-                  labelText: 'Contraseña',
-                  icon: Icon(Icons.lock),
-                ),
-                obscureText: true,
-              ),
+              _buildTextField(_codigoUsuarioController, 'Código Usuario', Icons.vpn_key, enabled: false),
+              _buildTextField(_nombreController, 'Nombre', Icons.person, isRequired: true),
+              _buildTextField(_codigoEmpleadoController, 'Código Empleado', Icons.badge, isRequired: true),
+              _buildTextField(_tipoUsuarioController, 'Tipo de Usuario', Icons.account_circle, isRequired: true),
+              _buildTextField(_nombreUsuarioController, 'Nombre de Usuario', Icons.account_box, isRequired: true),
+              _buildTextField(_contrasenaController, 'Contraseña', Icons.lock, isRequired: true, isPassword: true),
+              const SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  ElevatedButton(
+                  _buildButton(
+                    icon: Icons.save,
+                    label: 'Guardar',
+                    color: Colors.green,
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
                         final usuario = Usuario(
@@ -101,30 +70,19 @@ class _RegistroUsuariosState extends State<RegistroUsuarios> {
                           nombreUsuario: _nombreUsuarioController.text,
                           contrasena: _contrasenaController.text,
                         );
-                        Provider.of<UsuarioProvider>(context, listen: false)
-                            .agregarUsuario(usuario);
+                        Provider.of<UsuarioProvider>(context, listen: false).agregarUsuario(usuario);
                         _limpiarCasillas();
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Usuario registrado con éxito')),
+                        );
                       }
                     },
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Icon(Icons.save),
-                        const SizedBox(width: 8),
-                        const Text('Guardar'),
-                      ],
-                    ),
                   ),
-                  ElevatedButton(
+                  _buildButton(
+                    icon: Icons.clear,
+                    label: 'Limpiar',
+                    color: Colors.red,
                     onPressed: _limpiarCasillas,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Icon(Icons.clear),
-                        const SizedBox(width: 8),
-                        const Text('Limpiar'),
-                      ],
-                    ),
                   ),
                 ],
               ),
@@ -132,6 +90,44 @@ class _RegistroUsuariosState extends State<RegistroUsuarios> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildTextField(TextEditingController controller, String label, IconData icon, {bool enabled = true, bool isRequired = false, bool isPassword = false}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: TextFormField(
+        controller: controller,
+        enabled: enabled,
+        obscureText: isPassword,
+        decoration: InputDecoration(
+          labelText: label,
+          prefixIcon: Icon(icon),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+          filled: true,
+          fillColor: Colors.grey[200],
+        ),
+        validator: (value) {
+          if (isRequired && (value == null || value.isEmpty)) {
+            return 'Este campo es obligatorio';
+          }
+          return null;
+        },
+      ),
+    );
+  }
+
+  Widget _buildButton({required IconData icon, required String label, required Color color, required VoidCallback onPressed}) {
+    return ElevatedButton.icon(
+      icon: Icon(icon, size: 20),
+      label: Text(label, style: const TextStyle(fontSize: 16)),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: color,
+        foregroundColor: Colors.white,
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      ),
+      onPressed: onPressed,
     );
   }
 }
