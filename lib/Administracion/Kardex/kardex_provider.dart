@@ -3,15 +3,14 @@ import 'package:myapp/Administracion/Facturas/FacturasCobrar.dart';
 import 'package:myapp/Administracion/Facturas/FacturasPagar.dart';
 import 'ClasesKardex.dart';
 
-
 class KardexProvider with ChangeNotifier {
   final List<Producto> _productos = [];
   final List<FacturaPagar> _facturasPagar = [];
   final List<FacturaCobrar> _facturasCobrar = [];
 
-  List<Producto> get productos => _productos;
-  List<FacturaPagar> get facturasPagar => _facturasPagar;
-  List<FacturaCobrar> get facturasCobrar => _facturasCobrar;
+  List<Producto> get productos => List.unmodifiable(_productos);
+  List<FacturaPagar> get facturasPagar => List.unmodifiable(_facturasPagar);
+  List<FacturaCobrar> get facturasCobrar => List.unmodifiable(_facturasCobrar);
 
   void agregarProducto(Producto producto) {
     _productos.add(producto);
@@ -29,9 +28,11 @@ class KardexProvider with ChangeNotifier {
   }
 
   List<Producto> buscarPorFecha(DateTime inicio, DateTime fin) {
-    return _productos.where((producto) =>
-        producto.fecha.isAfter(inicio.subtract(const Duration(days: 1))) &&
-        producto.fecha.isBefore(fin.add(const Duration(days: 1)))).toList();
+    return _productos.where((producto) {
+      final fecha = producto.fecha;
+      return fecha.isAfter(inicio.subtract(const Duration(days: 1))) &&
+             fecha.isBefore(fin.add(const Duration(days: 1)));
+    }).toList();
   }
 
   List<Producto> buscarPorTipo(String tipo) {
@@ -39,12 +40,11 @@ class KardexProvider with ChangeNotifier {
   }
 
   List<Producto> generarKardexDesdeFacturas() {
-    List<Producto> kardex = [];
+    final List<Producto> kardex = [];
 
-    // Convertir facturas a pagar en productos
     for (var factura in _facturasPagar) {
       kardex.add(Producto(
-        id: factura.hashCode, // Usar hashCode para facturas a pagar
+        id: factura.hashCode,
         nombre: factura.proveedor,
         tipo: 'Salida',
         fecha: factura.fecha,
@@ -52,11 +52,10 @@ class KardexProvider with ChangeNotifier {
       ));
     }
 
-    // Convertir facturas a cobrar en productos
     for (var factura in _facturasCobrar) {
       kardex.add(Producto(
-        id: factura.nroFactura.hashCode, // Usar nroFactura.hashCode para facturas a cobrar
-        nombre: factura.proveedor, // Usar proveedor
+        id: factura.nroFactura.hashCode,
+        nombre: factura.proveedor,
         tipo: 'Entrada',
         fecha: factura.fecha,
         cantidad: factura.monto.toInt(),
@@ -65,7 +64,4 @@ class KardexProvider with ChangeNotifier {
 
     return kardex;
   }
-
-  // Métodos adicionales para cargar datos desde una API o base de datos
-  // ...
 }
