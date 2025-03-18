@@ -8,10 +8,13 @@ class MenuNavegacionProductos extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Productos App',
+      title: 'Gestión de Productos',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+        useMaterial3: true,
       ),
+      darkTheme: ThemeData.dark(),
+      themeMode: ThemeMode.system,
       home: const ProductosHomePage(),
     );
   }
@@ -27,24 +30,26 @@ class ProductosHomePage extends StatefulWidget {
 class _ProductosHomePageState extends State<ProductosHomePage> {
   int _selectedIndex = 0;
 
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
+  final List<Widget> _pages = [
+    const RegistroProductos(),
+    const InformeProductos(),
+  ];
+
+  final List<String> _titles = [
+    'Registrar Producto',
+    'Informe de Productos',
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: IndexedStack(
-        index: _selectedIndex,
-        children: <Widget>[
-          const RegistroProductos(),
-          const InformeProductos(),
-        ],
+      appBar: AppBar(
+        title: Text(_titles[_selectedIndex]),
+        centerTitle: true,
       ),
+      body: _pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
+        items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.add_shopping_cart),
             label: 'Registro',
@@ -56,7 +61,12 @@ class _ProductosHomePageState extends State<ProductosHomePage> {
         ],
         currentIndex: _selectedIndex,
         selectedItemColor: Colors.blue,
-        onTap: _onItemTapped,
+        unselectedItemColor: Colors.grey,
+        onTap: (index) {
+          setState(() {
+            _selectedIndex = index;
+          });
+        },
       ),
     );
   }
