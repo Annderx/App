@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:myapp/Administracion/Facturas/FacPagar.dart';
+import 'FacPagar.dart';
 import 'InformePagarFacturas.dart';
 
 class MenuNavegacionPagarFacturas extends StatelessWidget {
@@ -8,9 +8,10 @@ class MenuNavegacionPagarFacturas extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Facturas a Pagar App',
+      title: 'Facturas a Pagar',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.red),
+        useMaterial3: true,
       ),
       home: const PagarFacturasHomePage(),
     );
@@ -26,37 +27,32 @@ class PagarFacturasHomePage extends StatefulWidget {
 
 class _PagarFacturasHomePageState extends State<PagarFacturasHomePage> {
   int _selectedIndex = 0;
+  final List<Widget> _pages = const [
+    RegistroPagarFacturas(),
+    InformePagarFacturas(),
+  ];
 
   void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+    setState(() => _selectedIndex = index);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: IndexedStack(
-        index: _selectedIndex,
-        children: <Widget>[
-          const RegistroPagarFacturas(),
-          const InformePagarFacturas(),
-        ],
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
+      body: _pages[_selectedIndex],
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: _selectedIndex,
+        onDestinationSelected: _onItemTapped,
+        destinations: const [
+          NavigationDestination(
             icon: Icon(Icons.money_off),
             label: 'Pagar',
           ),
-          BottomNavigationBarItem(
+          NavigationDestination(
             icon: Icon(Icons.list),
             label: 'Informe',
           ),
         ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.blue,
-        onTap: _onItemTapped,
       ),
     );
   }
