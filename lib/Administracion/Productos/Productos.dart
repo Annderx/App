@@ -26,8 +26,17 @@ class _RegistroProductosState extends State<RegistroProductos> {
   final _referenciaController = TextEditingController();
   final _ubicacionController = TextEditingController();
 
-  void _limpiarCasillas() {
-    _codigoProductoController.clear();
+  @override
+  void initState() {
+    super.initState();
+    _codigoProductoController.text = _generarCodigoProducto();
+  }
+
+  String _generarCodigoProducto() {
+    return 'PROD-${DateTime.now().millisecondsSinceEpoch}';
+  }
+
+  void _limpiarCampos() {
     _descripcionController.clear();
     _marcaController.clear();
     _objetivoController.clear();
@@ -45,186 +54,30 @@ class _RegistroProductosState extends State<RegistroProductos> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Registro de Productos'),
-      ),
+      appBar: AppBar(title: const Text('Registro de Productos')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Código de producto y descripción en la misma línea
+              _buildTextField(_codigoProductoController, 'Código Producto', Icons.qr_code, enabled: false),
+              _buildTextField(_descripcionController, 'Descripción', Icons.description),
+              _buildTextField(_marcaController, 'Marca', Icons.branding_watermark),
+              _buildTextField(_ubicacionController, 'Ubicación', Icons.location_on),
+              _buildTextField(_objetivoController, 'Objetivo', Icons.flag),
+              _buildTextField(_cantidadController, 'Cantidad', Icons.format_list_numbered, isNumeric: true),
+              _buildTextField(_categoriaController, 'Categoría', Icons.category),
+              _buildTextField(_unidadController, 'Unidad', Icons.straighten),
+              _buildTextField(_precioController, 'Precio', Icons.attach_money, isNumeric: true),
+              _buildTextField(_detalleMedidaController, 'Detalle de Medida', Icons.info_outline),
+              _buildTextField(_referenciaController, 'Referencia', Icons.link),
+              const SizedBox(height: 20),
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Expanded(
-                    child: TextFormField(
-                      controller: _codigoProductoController,
-                      decoration: const InputDecoration(
-                        labelText: 'Código Producto',
-                        icon: Icon(Icons.qr_code),
-                      ),
-                      enabled: false,
-                    ),
-                  ),
-                  Expanded(
-                    child: TextFormField(
-                      controller: _descripcionController,
-                      decoration: const InputDecoration(
-                        labelText: 'Descripción',
-                        icon: Icon(Icons.description),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              // Marca y ubicación en la misma línea
-              Row(
-                children: [
-                  Expanded(
-                    child: TextFormField(
-                      controller: _marcaController,
-                      decoration: const InputDecoration(
-                        labelText: 'Marca',
-                        icon: Icon(Icons.branding_watermark),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: TextFormField(
-                      controller: _ubicacionController,
-                      decoration: const InputDecoration(
-                        labelText: 'Ubicación',
-                        icon: Icon(Icons.location_on),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              // Objetivo y cantidad en la misma línea
-              Row(
-                children: [
-                  Expanded(
-                    child: TextFormField(
-                      controller: _objetivoController,
-                      decoration: const InputDecoration(
-                        labelText: 'Objetivo',
-                        icon: Icon(Icons.flag),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: TextFormField(
-                      controller: _cantidadController,
-                      decoration: const InputDecoration(
-                        labelText: 'Cantidad',
-                        icon: Icon(Icons.format_list_numbered),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              // Categoría y unidad en la misma línea
-              Row(
-                children: [
-                  Expanded(
-                    child: TextFormField(
-                      controller: _categoriaController,
-                      decoration: const InputDecoration(
-                        labelText: 'Categoría',
-                        icon: Icon(Icons.category),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: TextFormField(
-                      controller: _unidadController,
-                      decoration: const InputDecoration(
-                        labelText: 'Unidad',
-                        icon: Icon(Icons.straighten),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              // Precio y detalle de medida en la misma línea
-              Row(
-                children: [
-                  Expanded(
-                    child: TextFormField(
-                      controller: _precioController,
-                      decoration: const InputDecoration(
-                        labelText: 'Precio',
-                        icon: Icon(Icons.attach_money),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: TextFormField(
-                      controller: _detalleMedidaController,
-                      decoration: const InputDecoration(
-                        labelText: 'Detalle de Medida',
-                        icon: Icon(Icons.info_outline),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              // Referencia
-              TextFormField(
-                controller: _referenciaController,
-                decoration: const InputDecoration(
-                  labelText: 'Referencia',
-                  icon: Icon(Icons.link),
-                ),
-              ),
-              // Botones en la misma línea
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        final producto = Producto(
-                          id: DateTime.now().millisecondsSinceEpoch,
-                          codigoProducto: _codigoProductoController.text,
-                          descripcion: _descripcionController.text,
-                          marca: _marcaController.text,
-                          objetivo: _objetivoController.text,
-                          cantidad: int.parse(_cantidadController.text),
-                          categoria: _categoriaController.text,
-                          unidad: _unidadController.text,
-                          precio: double.parse(_precioController.text),
-                          detalleMedida: _detalleMedidaController.text,
-                          referencia: _referenciaController.text,
-                          ubicacion: _ubicacionController.text,
-                        );
-                        Provider.of<ProductoProvider>(context, listen: false)
-                            .agregarProducto(producto);
-                        _limpiarCasillas();
-                      }
-                    },
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Icon(Icons.save),
-                        const SizedBox(width: 8),
-                        const Text('Guardar'),
-                      ],
-                    ),
-                  ),
-                  ElevatedButton(
-                    onPressed: _limpiarCasillas,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Icon(Icons.clear),
-                        const SizedBox(width: 8),
-                        const Text('Limpiar'),
-                      ],
-                    ),
-                  ),
+                  _buildActionButton('Guardar', Icons.save, Colors.blue, _guardarProducto),
+                  _buildActionButton('Limpiar', Icons.clear, Colors.red, _limpiarCampos),
                 ],
               ),
             ],
@@ -232,5 +85,71 @@ class _RegistroProductosState extends State<RegistroProductos> {
         ),
       ),
     );
+  }
+
+  Widget _buildTextField(TextEditingController controller, String label, IconData icon, {bool enabled = true, bool isNumeric = false}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: TextFormField(
+        controller: controller,
+        decoration: InputDecoration(
+          labelText: label,
+          icon: Icon(icon),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+        ),
+        enabled: enabled,
+        keyboardType: isNumeric ? TextInputType.number : TextInputType.text,
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return 'Por favor ingrese $label';
+          }
+          if (isNumeric && double.tryParse(value) == null) {
+            return 'Ingrese un número válido';
+          }
+          return null;
+        },
+      ),
+    );
+  }
+
+  Widget _buildActionButton(String text, IconData icon, Color color, VoidCallback onPressed) {
+    return ElevatedButton.icon(
+      onPressed: onPressed,
+      icon: Icon(icon),
+      label: Text(text),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: color,
+        foregroundColor: Colors.white,
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      ),
+    );
+  }
+
+  void _guardarProducto() {
+    if (_formKey.currentState!.validate()) {
+      final producto = Producto(
+        id: DateTime.now().millisecondsSinceEpoch,
+        codigoProducto: _codigoProductoController.text,
+        descripcion: _descripcionController.text,
+        marca: _marcaController.text,
+        objetivo: _objetivoController.text,
+        cantidad: int.parse(_cantidadController.text),
+        categoria: _categoriaController.text,
+        unidad: _unidadController.text,
+        precio: double.parse(_precioController.text),
+        detalleMedida: _detalleMedidaController.text,
+        referencia: _referenciaController.text,
+        ubicacion: _ubicacionController.text,
+      );
+
+      Provider.of<ProductoProvider>(context, listen: false).agregarProducto(producto);
+      _limpiarCampos();
+      _mostrarMensaje('Producto guardado con éxito');
+    }
+  }
+
+  void _mostrarMensaje(String mensaje) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(mensaje)));
   }
 }
