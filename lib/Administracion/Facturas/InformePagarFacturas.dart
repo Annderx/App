@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'pagar_provider.dart';
 import 'FacturasPagar.dart';
+import 'package:intl/intl.dart'; // Para formatear fechas y montos
 
 class InformePagarFacturas extends StatelessWidget {
   const InformePagarFacturas({super.key});
@@ -10,26 +11,41 @@ class InformePagarFacturas extends StatelessWidget {
   Widget build(BuildContext context) {
     final facturaProvider = Provider.of<FacturaPagarProvider>(context);
     final facturas = facturaProvider.facturas;
+    final currencyFormat = NumberFormat.currency(locale: 'es_PE', symbol: 'S/'); // Formato de moneda
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Informe de Facturas a Pagar'),
-      ),
-      body: ListView.builder(
-        itemCount: facturas.length,
-        itemBuilder: (context, index) {
-          final factura = facturas[index];
-          return ListTile(
-            title: Text('Factura: ${factura.nroFactura}'),
-            subtitle: Text('Proveedor: ${factura.proveedor}'),
-            onTap: () => _mostrarDetallesFactura(context, factura),
-          );
-        },
-      ),
+      appBar: AppBar(title: const Text('Informe de Facturas a Pagar')),
+      body: facturas.isEmpty
+          ? const Center(child: Text('No hay facturas registradas'))
+          : ListView.builder(
+              itemCount: facturas.length,
+              itemBuilder: (context, index) {
+                final factura = facturas[index];
+                return Card(
+                  margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  child: ListTile(
+                    title: Text('Factura: ${factura.nroFactura}'),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Proveedor: ${factura.proveedor}'),
+                        Text('Monto: ${currencyFormat.format(factura.monto)}'),
+                        Text('Saldo Pendiente: ${currencyFormat.format(factura.saldoPendiente)}'),
+                      ],
+                    ),
+                    trailing: Icon(Icons.info, color: factura.saldoPendiente > 0 ? Colors.red : Colors.green),
+                    onTap: () => _mostrarDetallesFactura(context, factura),
+                  ),
+                );
+              },
+            ),
     );
   }
 
   void _mostrarDetallesFactura(BuildContext context, FacturaPagar factura) {
+    final currencyFormat = NumberFormat.currency(locale: 'es_PE', symbol: 'S/'); // Formato de moneda
+    final dateFormat = DateFormat('dd/MM/yyyy'); // Formato de fecha
+
     showDialog(
       context: context,
       builder: (BuildContext dialogContext) {
@@ -39,27 +55,38 @@ class InformePagarFacturas extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('N° Factura: ${factura.nroFactura}'),
-                Text('Proveedor: ${factura.proveedor}'),
-                Text('Monto: ${factura.monto}'),
-                Text('Forma de Pago: ${factura.formaPago}'),
-                Text('Fecha: ${factura.fecha.toString().split(' ')[0]}'),
-                Text('Acuenta 1: ${factura.acuenta1}'),
-                Text('Acuenta 2: ${factura.acuenta2}'),
-                Text('Acuenta 3: ${factura.acuenta3}'),
+                _buildDetailRow('N° Factura', factura.nroFactura),
+                _buildDetailRow('Proveedor', factura.proveedor),
+                _buildDetailRow('Monto', currencyFormat.format(factura.monto)),
+                _buildDetailRow('Forma de Pago', factura.formaPago),
+                _buildDetailRow('Fecha', dateFormat.format(factura.fecha)),
+                _buildDetailRow('Acuenta 1', currencyFormat.format(factura.acuenta1)),
+                _buildDetailRow('Acuenta 2', currencyFormat.format(factura.acuenta2)),
+                _buildDetailRow('Acuenta 3', currencyFormat.format(factura.acuenta3)),
+                _buildDetailRow('Saldo Pendiente', currencyFormat.format(factura.saldoPendiente)),
               ],
             ),
           ),
           actions: <Widget>[
             TextButton(
               child: const Text('Cerrar'),
-              onPressed: () {
-                Navigator.of(dialogContext).pop();
-              },
+              onPressed: () => Navigator.of(dialogContext).pop(),
             ),
           ],
         );
       },
+    );
+  }
+
+  Widget _buildDetailRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        children: [
+          Text('$label: ', style: const TextStyle(fontWeight: FontWeight.bold)),
+          Expanded(child: Text(value)),
+        ],
+      ),
     );
   }
 }
