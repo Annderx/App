@@ -1,21 +1,31 @@
 class Usuario {
-  final int id;
+  final int? id;
   final String codigoUsuario;
   final String nombre;
   final String codigoEmpleado;
   final String tipoUsuario;
   final String nombreUsuario;
-  final String contrasena;
+  final String _contrasena; // Privado para mayor seguridad
 
   Usuario({
-    required this.id,
+    this.id,
     required this.codigoUsuario,
     required this.nombre,
     required this.codigoEmpleado,
     required this.tipoUsuario,
     required this.nombreUsuario,
-    required this.contrasena,
-  });
+    required String contrasena, // Se usa un setter seguro
+  }) : _contrasena = _encriptarContrasena(contrasena); // Encripta la contraseña
+
+  /// Método para encriptar contraseñas (simple simulación)
+  static String _encriptarContrasena(String contrasena) {
+    return contrasena.split('').reversed.join(); // Simulación, usar un hash real
+  }
+
+  /// Método para verificar contraseña (para login)
+  bool verificarContrasena(String input) {
+    return _encriptarContrasena(input) == _contrasena;
+  }
 
   factory Usuario.fromJson(Map<String, dynamic> json) {
     return Usuario(
@@ -25,7 +35,7 @@ class Usuario {
       codigoEmpleado: json['codigoEmpleado'],
       tipoUsuario: json['tipoUsuario'],
       nombreUsuario: json['nombreUsuario'],
-      contrasena: json['contrasena'],
+      contrasena: json['contrasena'], // Encriptada al crearse
     );
   }
 
@@ -37,7 +47,7 @@ class Usuario {
       'codigoEmpleado': codigoEmpleado,
       'tipoUsuario': tipoUsuario,
       'nombreUsuario': nombreUsuario,
-      'contrasena': contrasena,
+      'contrasena': '********', // No exponer la contraseña real
     };
   }
 }
