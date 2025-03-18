@@ -2,30 +2,17 @@ import 'package:flutter/material.dart';
 import 'Usuarios.dart';
 import 'InformeUsuarios.dart';
 
-class MenuNavegacionUsuarios extends StatelessWidget {
+class MenuNavegacionUsuarios extends StatefulWidget {
   const MenuNavegacionUsuarios({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Usuarios App',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: const UsuariosHomePage(),
-    );
-  }
+  _MenuNavegacionUsuariosState createState() => _MenuNavegacionUsuariosState();
 }
 
-class UsuariosHomePage extends StatefulWidget {
-  const UsuariosHomePage({super.key});
-
-  @override
-  _UsuariosHomePageState createState() => _UsuariosHomePageState();
-}
-
-class _UsuariosHomePageState extends State<UsuariosHomePage> {
+class _MenuNavegacionUsuariosState extends State<MenuNavegacionUsuarios> {
   int _selectedIndex = 0;
+  final List<Widget> _screens = [const RegistroUsuarios(), const InformeUsuarios()];
+  final List<String> _titles = ['Registro de Usuarios', 'Informe de Usuarios'];
 
   void _onItemTapped(int index) {
     setState(() {
@@ -35,28 +22,38 @@ class _UsuariosHomePageState extends State<UsuariosHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: IndexedStack(
-        index: _selectedIndex,
-        children: <Widget>[
-          const RegistroUsuarios(),
-          const InformeUsuarios(),
-        ],
+    return MaterialApp(
+      title: 'Usuarios App',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person_add),
-            label: 'Registro',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.list),
-            label: 'Informe',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.blue,
-        onTap: _onItemTapped,
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text(_titles[_selectedIndex]),
+          centerTitle: true,
+          backgroundColor: Colors.blueAccent,
+          foregroundColor: Colors.white,
+        ),
+        body: AnimatedSwitcher(
+          duration: const Duration(milliseconds: 300),
+          child: _screens[_selectedIndex],
+        ),
+        bottomNavigationBar: BottomNavigationBar(
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person_add),
+              label: 'Registro',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.list),
+              label: 'Informe',
+            ),
+          ],
+          currentIndex: _selectedIndex,
+          selectedItemColor: Colors.blue,
+          selectedIconTheme: const IconThemeData(size: 30),
+          onTap: _onItemTapped,
+        ),
       ),
     );
   }
