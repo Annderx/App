@@ -11,7 +11,10 @@ class MenuNavegacionKardex extends StatelessWidget {
       title: 'Kardex App',
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        useMaterial3: true, // Mejora visual con Material 3
       ),
+      darkTheme: ThemeData.dark(),
+      themeMode: ThemeMode.system,
       home: const KardexHomePage(),
     );
   }
@@ -26,37 +29,22 @@ class KardexHomePage extends StatefulWidget {
 
 class _KardexHomePageState extends State<KardexHomePage> {
   int _selectedIndex = 0;
+  final List<Widget> _screens = const [KardexEntradaSalida(), InformeKardex()];
 
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
+  void _onItemTapped(int index) => setState(() => _selectedIndex = index);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: IndexedStack(
-        index: _selectedIndex,
-        children: <Widget>[
-          const KardexEntradaSalida(),
-          const InformeKardex(),
+      appBar: AppBar(title: const Text('Gestión de Kardex')),
+      body: _screens[_selectedIndex],
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: _selectedIndex,
+        onDestinationSelected: _onItemTapped,
+        destinations: const [
+          NavigationDestination(icon: Icon(Icons.inventory), label: 'Kardex'),
+          NavigationDestination(icon: Icon(Icons.list), label: 'Informe'),
         ],
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.inventory),
-            label: 'Kardex',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.list),
-            label: 'Informe',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.blue,
-        onTap: _onItemTapped,
       ),
     );
   }
