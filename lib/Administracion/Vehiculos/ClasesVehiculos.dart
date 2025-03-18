@@ -8,8 +8,8 @@ class Vehiculo {
   final String combustible;
   final String tipoVehiculo;
   final String placa;
-  final String anioFabricacion;
-  final String anioModelo;
+  final int anioFabricacion;
+  final int anioModelo;
   final String nroMotor;
   final String vin;
 
@@ -29,24 +29,26 @@ class Vehiculo {
     required this.vin,
   });
 
+  /// Convierte un JSON en una instancia de Vehiculo con validaciones
   factory Vehiculo.fromJson(Map<String, dynamic> json) {
     return Vehiculo(
-      id: json['id'],
-      codigoVehiculo: json['codigoVehiculo'],
-      razonSocial: json['razonSocial'],
-      contacto: json['contacto'],
-      modelo: json['modelo'],
-      marca: json['marca'],
-      combustible: json['combustible'],
-      tipoVehiculo: json['tipoVehiculo'],
-      placa: json['placa'],
-      anioFabricacion: json['anioFabricacion'],
-      anioModelo: json['anioModelo'],
-      nroMotor: json['nroMotor'],
-      vin: json['vin'],
+      id: json['id'] ?? 0,
+      codigoVehiculo: json['codigoVehiculo'] ?? 'SIN_CODIGO',
+      razonSocial: json['razonSocial'] ?? 'Desconocido',
+      contacto: json['contacto'] ?? 'No registrado',
+      modelo: json['modelo'] ?? 'Desconocido',
+      marca: json['marca'] ?? 'Desconocida',
+      combustible: json['combustible'] ?? 'Desconocido',
+      tipoVehiculo: json['tipoVehiculo'] ?? 'No especificado',
+      placa: json['placa'] ?? 'No asignada',
+      anioFabricacion: int.tryParse(json['anioFabricacion'].toString()) ?? 2000,
+      anioModelo: int.tryParse(json['anioModelo'].toString()) ?? 2000,
+      nroMotor: json['nroMotor'] ?? 'N/A',
+      vin: json['vin'] ?? 'N/A',
     );
   }
 
+  /// Convierte la instancia de Vehiculo en un JSON válido
   Map<String, dynamic> toJson() {
     return {
       'id': id,
@@ -58,8 +60,8 @@ class Vehiculo {
       'combustible': combustible,
       'tipoVehiculo': tipoVehiculo,
       'placa': placa,
-      'anioFabricacion': anioFabricacion,
-      'anioModelo': anioModelo,
+      'anioFabricacion': anioFabricacion.toString(),
+      'anioModelo': anioModelo.toString(),
       'nroMotor': nroMotor,
       'vin': vin,
     };
