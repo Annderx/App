@@ -11,6 +11,7 @@ class MenuNavegacionVehiculos extends StatelessWidget {
       title: 'Vehículos App',
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        useMaterial3: true, // Soporte para Material Design 3
       ),
       home: const VehiculosHomePage(),
     );
@@ -27,6 +28,11 @@ class VehiculosHomePage extends StatefulWidget {
 class _VehiculosHomePageState extends State<VehiculosHomePage> {
   int _selectedIndex = 0;
 
+  final List<Widget> _pages = [
+    const RegistroVehiculos(),
+    const InformeVehiculos(),
+  ];
+
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -35,28 +41,25 @@ class _VehiculosHomePageState extends State<VehiculosHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: IndexedStack(
-        index: _selectedIndex,
-        children: <Widget>[
-          const RegistroVehiculos(),
-          const InformeVehiculos(),
-        ],
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.directions_car),
-            label: 'Registro',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.list),
-            label: 'Informe',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.blue,
-        onTap: _onItemTapped,
+    return SafeArea(
+      child: Scaffold(
+        body: _pages[_selectedIndex],
+        bottomNavigationBar: BottomNavigationBar(
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.car_repair),
+              label: 'Registro',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.list_alt),
+              label: 'Informe',
+            ),
+          ],
+          currentIndex: _selectedIndex,
+          selectedItemColor: Colors.blue,
+          onTap: _onItemTapped,
+          type: BottomNavigationBarType.fixed, // Mantiene los iconos fijos
+        ),
       ),
     );
   }
