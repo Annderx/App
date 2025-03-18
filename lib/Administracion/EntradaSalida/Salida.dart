@@ -1,21 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:myapp/Administracion/EntradaSalida/ClasesSalida.dart';
-import 'package:myapp/Administracion/EntradaSalida/InformeSalida.dart';
-import 'package:myapp/Administracion/EntradaSalida/salida_provider.dart';
 import 'package:provider/provider.dart';
-
-/*class SalidaProductos extends StatelessWidget {
-  const SalidaProductos({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Salida De Productos'),
-      ),      
-    );
-  }
-}*/
+import 'ClasesSalida.dart';
+import 'InformeSalida.dart';
+import 'salida_provider.dart';
 
 class RegistroSalida extends StatefulWidget {
   const RegistroSalida({super.key});
@@ -27,7 +14,6 @@ class RegistroSalida extends StatefulWidget {
 class _RegistroSalidaState extends State<RegistroSalida> {
   final _formKey = GlobalKey<FormState>();
 
-  // Controladores para los campos de texto
   final _codigoSalidaController = TextEditingController();
   final _codigoProductoController = TextEditingController();
   final _descripcionController = TextEditingController();
@@ -45,19 +31,13 @@ class _RegistroSalidaState extends State<RegistroSalida> {
   @override
   void initState() {
     super.initState();
-    _cargarDatos(); // Llama a la función para cargar los datos iniciales
+    _generarCodigoSalida();
   }
 
-  Future<void> _cargarDatos() async {
-    // Aquí puedes cargar los datos desde una base de datos o API
-    // Por ejemplo:
-    // _proveedores = await obtenerProveedores();
-
-    // Luego, actualiza el estado para que los DropdownButton se actualicen
-    setState(() {});
+  Future<void> _generarCodigoSalida() async {
+    _codigoSalidaController.text = 'SAL-${DateTime.now().millisecondsSinceEpoch}';
   }
 
-  // ignore: unused_element
   void _limpiarCasillas() {
     _codigoSalidaController.clear();
     _codigoProductoController.clear();
@@ -71,8 +51,95 @@ class _RegistroSalidaState extends State<RegistroSalida> {
     _ubicacionController.clear();
     _fecha = null;
     _estado = null;
+    setState(() {});
+  }
 
-    setState(() {}); // Actualiza el estado para limpiar la fecha
+  void _guardarSalida() {
+    if (!_formKey.currentState!.validate()) return;
+
+    final salidaProvider = Provider.of<SalidaProvider>(context, listen: false);
+
+    final nuevaSalida = Salida(
+      codigoSalida: _codigoSalidaController.text,
+      fecha: _fecha,
+      codigoProducto: _codigoProductoController.text,
+      descripcion: _descripcionController.text,
+      cantidad: int.parse(_cantidadController.text),
+      precio: double.parse(_precioController.text),
+      marca: _marcaController.text,
+      unidad: _unidadController.text,
+      empleado: _empleadoController.text,
+      cliente: _clienteController.text,
+      ubicacion: _ubicacionController.text,
+      estado: _estado!,
+    );
+
+    salidaProvider.agregarSalida(nuevaSalida);
+
+    _mostrarDialogoConfirmacion();
+  }
+
+  void _mostrarDialogoConfirmacion() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: const Text('Salida guardada'),
+        content: const Text('¿Desea ver el informe de salidas?'),
+        actions: [
+          TextButton(
+            child: const Text('No'),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          TextButton(
+            child: const Text('Sí'),
+            onPressed: () {
+              Navigator.of(context).pop();
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const InformeSalidas()),
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTextField(String label, TextEditingController controller, {bool isNumeric = false}) {
+    return TextFormField(
+      controller: controller,
+      decoration: InputDecoration(labelText: label),
+      keyboardType: isNumeric ? TextInputType.number : TextInputType.text,
+      validator: (value) {
+        if (value == null || value.isEmpty) return 'Ingrese $label';
+        if (isNumeric && double.tryParse(value) == null) return 'Ingrese un número válido';
+        return null;
+      },
+    );
+  }
+
+  Widget _buildFechaSelector() {
+    return Row(
+      children: [
+        Text(
+          _fecha != null ? 'Fecha: ${_fecha!.toLocal().toString().split(' ')[0]}' : 'Fecha:',
+        ),
+        IconButton(
+          onPressed: () async {
+            final DateTime? picked = await showDatePicker(
+              context: context,
+              initialDate: DateTime.now(),
+              firstDate: DateTime(1900),
+              lastDate: DateTime.now(),
+            );
+            if (picked != null && picked != _fecha) {
+              setState(() => _fecha = picked);
+            }
+          },
+          icon: const Icon(Icons.calendar_today),
+        ),
+      ],
+    );
   }
 
   @override
@@ -86,201 +153,36 @@ class _RegistroSalidaState extends State<RegistroSalida> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Código de salida y fecha en la misma línea
-              Row(
-                children: [
-                  Expanded(
-                    child: TextFormField(
-                      controller: _codigoSalidaController,
-                      decoration: const InputDecoration(
-                        labelText: 'Código Salida',
-                      ),
-                      enabled: false,
-                    ),
-                  ),
-                  Expanded(
-                    child: Row(
-                      children: [
-                        Text(
-                          _fecha != null
-                              ? 'Fecha: ${_fecha!.toString().split(' ')[0]}'
-                              : 'Fecha: ',
-                        ),
-                        IconButton(
-                          onPressed: () async {
-                            final DateTime? picked = await showDatePicker(
-                              context: context,
-                              initialDate: DateTime.now(),
-                              firstDate: DateTime(1900),
-                              lastDate: DateTime.now(),
-                            );
-                            if (picked != null && picked != _fecha) {
-                              setState(() {
-                                _fecha = picked;
-                              });
-                            }
-                          },
-                          icon: const Icon(Icons.calendar_today),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              // Estado
+              _buildTextField('Código Salida', _codigoSalidaController),
+              _buildFechaSelector(),
+              _buildTextField('Código Producto', _codigoProductoController),
+              _buildTextField('Descripción', _descripcionController),
+              _buildTextField('Cantidad', _cantidadController, isNumeric: true),
+              _buildTextField('Precio', _precioController, isNumeric: true),
+              _buildTextField('Marca', _marcaController),
+              _buildTextField('Unidad', _unidadController),
+              _buildTextField('Empleado', _empleadoController),
+              _buildTextField('Cliente', _clienteController),
+              _buildTextField('Ubicación', _ubicacionController),
               DropdownButtonFormField<String>(
                 decoration: const InputDecoration(labelText: 'Estado'),
                 value: _estado,
-                items:
-                    ['Disponible', 'No Disponible']
-                        .map(
-                          (estado) => DropdownMenuItem<String>(
-                            value: estado,
-                            child: Text(estado),
-                          ),
-                        )
-                        .toList(),
+                items: ['Disponible', 'No Disponible']
+                    .map((estado) => DropdownMenuItem<String>(
+                          value: estado,
+                          child: Text(estado),
+                        ))
+                    .toList(),
                 onChanged: (value) {
-                  setState(() {
-                    _estado = value;
-                  });
+                  setState(() => _estado = value);
                 },
               ),
-              // Datos del producto y empleado en columnas
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              const SizedBox(height: 20),
+              Wrap(
+                spacing: 10,
                 children: [
-                  Expanded(
-                    child: Column(
-                      children: [
-                        TextFormField(
-                          controller: _codigoProductoController,
-                          decoration: const InputDecoration(
-                            labelText: 'Código Producto',
-                          ),
-                        ),
-                        TextFormField(
-                          controller: _descripcionController,
-                          decoration: const InputDecoration(
-                            labelText: 'Descripción',
-                          ),
-                        ),
-                        TextFormField(
-                          controller: _cantidadController,
-                          decoration: const InputDecoration(
-                            labelText: 'Cantidad',
-                          ),
-                        ),
-                        TextFormField(
-                          controller: _ubicacionController,
-                          decoration: const InputDecoration(
-                            labelText: 'Ubicación',
-                          ),
-                        ),
-                        TextFormField(
-                          controller: _precioController,
-                          decoration: const InputDecoration(
-                            labelText: 'Precio',
-                          ),
-                        ),
-                        TextFormField(
-                          controller: _marcaController,
-                          decoration: const InputDecoration(labelText: 'Marca'),
-                        ),
-                        TextFormField(
-                          controller: _unidadController,
-                          decoration: const InputDecoration(
-                            labelText: 'Unidad',
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    child: Column(
-                      children: [
-                        TextFormField(
-                          controller: _empleadoController,
-                          decoration: const InputDecoration(
-                            labelText: 'Empleado',
-                          ),
-                        ),
-                        TextFormField(
-                          controller: _clienteController,
-                          decoration: const InputDecoration(
-                            labelText: 'Cliente',
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              // Botones en la misma línea
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        final salidaProvider = Provider.of<SalidaProvider>(
-                          context,
-                          listen: false,
-                        );
-
-                        final nuevaSalida = Salida(
-                          codigoSalida: _codigoSalidaController.text,
-                          fecha: _fecha,
-                          codigoProducto: _codigoProductoController.text,
-                          descripcion: _descripcionController.text,
-                          cantidad: _cantidadController.text,
-                          precio: _precioController.text,
-                          marca: _marcaController.text,
-                          unidad: _unidadController.text,
-                          empleado: _empleadoController.text,
-                          cliente: _clienteController.text,
-                          ubicacion: _ubicacionController.text,
-                          estado: _estado!,
-                        );
-
-                        salidaProvider.agregarSalida(nuevaSalida);
-
-                        // Mostrar un diálogo
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              title: const Text('Salida guardada'),
-                              content: const Text(
-                                '¿Desea ver el informe de entradas y salidas?',
-                              ),
-                              actions: <Widget>[
-                                TextButton(
-                                  child: const Text('No'),
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                ),
-                                TextButton(
-                                  child: const Text('Sí'),
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => InformeSalidas(),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ],
-                            );
-                          },
-                        );
-                      }
-                    },
-                    child: const Text('Guardar'),
-                  ),
+                  ElevatedButton(onPressed: _guardarSalida, child: const Text('Guardar')),
+                  ElevatedButton(onPressed: _limpiarCasillas, child: const Text('Limpiar')),
                 ],
               ),
             ],
