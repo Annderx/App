@@ -2,10 +2,6 @@ import 'package:flutter/material.dart';
 import 'Cliente.dart';
 import 'InformeClientes.dart';
 
-void main() {
-  runApp(const NavegacionClientes());
-}
-
 class NavegacionClientes extends StatelessWidget {
   const NavegacionClientes({super.key});
 
@@ -14,8 +10,11 @@ class NavegacionClientes extends StatelessWidget {
     return MaterialApp(
       title: 'Clientes App',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+        useMaterial3: true,
       ),
+      darkTheme: ThemeData.dark(),
+      themeMode: ThemeMode.system,
       home: const MyHomePage(),
     );
   }
@@ -31,6 +30,11 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 0;
 
+  final List<Widget> _screens = [
+    const RegistroCliente(),
+    const InformeClientes(),
+  ];
+
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -39,29 +43,53 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    bool isWideScreen = MediaQuery.of(context).size.width > 600;
+
     return Scaffold(
-      body: IndexedStack(
-        index: _selectedIndex,
-        children: <Widget>[
-          RegistroCliente(), // No necesitas pasar la lista aquí
-          const InformeClientes(), // No necesitas pasar la lista aquí
+      body: Row(
+        children: [
+          if (isWideScreen)
+            NavigationRail(
+              selectedIndex: _selectedIndex,
+              onDestinationSelected: _onItemTapped,
+              destinations: const [
+                NavigationRailDestination(
+                  icon: Icon(Icons.person_add),
+                  selectedIcon: Icon(Icons.person_add, color: Colors.blue),
+                  label: Text('Clientes'),
+                ),
+                NavigationRailDestination(
+                  icon: Icon(Icons.list),
+                  selectedIcon: Icon(Icons.list, color: Colors.blue),
+                  label: Text('Informe'),
+                ),
+              ],
+            ),
+          Expanded(
+            child: IndexedStack(
+              index: _selectedIndex,
+              children: _screens,
+            ),
+          ),
         ],
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person_add),
-            label: 'Clientes',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.list),
-            label: 'Informe',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.blue,
-        onTap: _onItemTapped,
-      ),
+      bottomNavigationBar: isWideScreen
+          ? null
+          : BottomNavigationBar(
+              items: const [
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.person_add),
+                  label: 'Clientes',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.list),
+                  label: 'Informe',
+                ),
+              ],
+              currentIndex: _selectedIndex,
+              selectedItemColor: Colors.blue,
+              onTap: _onItemTapped,
+            ),
     );
   }
 }
