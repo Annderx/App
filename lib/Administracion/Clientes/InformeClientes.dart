@@ -27,7 +27,7 @@ class _InformeClientesState extends State<InformeClientes> {
   void _cargarClientes() {
     final clienteProvider = Provider.of<ClienteProvider>(context, listen: false);
     setState(() {
-      _clientesFuture = clienteProvider.obtenerClientes();
+      _clientesFuture = clienteProvider.leerClientes(filtro: _filtro);
     });
   }
 
@@ -45,7 +45,7 @@ class _InformeClientesState extends State<InformeClientes> {
           ),
           TextButton(
             onPressed: () {
-              clienteProvider.eliminarCliente(id);
+              clienteProvider.eliminarCliente(id as String);
               _cargarClientes();
               Navigator.pop(context);
             },

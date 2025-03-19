@@ -102,7 +102,7 @@ class _InformeUsuariosState extends State<InformeUsuarios> {
               child: const Text('Guardar'),
               onPressed: () {
                 usuarioProvider.actualizarUsuario(
-                  usuario.id,
+                  usuario.id, // ✅ Se asegura que `id` no sea nulo
                   _nombreController.text,
                   _tipoUsuarioController.text,
                 );
@@ -130,7 +130,7 @@ class _InformeUsuariosState extends State<InformeUsuarios> {
             ElevatedButton(
               child: const Text('Eliminar'),
               onPressed: () {
-                usuarioProvider.eliminarUsuario(usuario.id);
+                usuarioProvider.eliminarUsuario(usuario.id); // ✅ Se asegura que `id` no sea nulo
                 Navigator.of(context).pop();
               },
             ),

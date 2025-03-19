@@ -45,11 +45,13 @@ class EmpleadoProvider extends ChangeNotifier {
     await obtenerEmpleados();
   }
 
-  Future<void> obtenerEmpleados() async {
-    final List<Map<String, dynamic>> empleadosMap = await _database.query('empleados');
-    _empleados = empleadosMap.map((e) => Empleado.fromMap(e)).toList();
-    notifyListeners();
-  }
+  Future<List<Empleado>> obtenerEmpleados() async {
+  final List<Map<String, dynamic>> empleadosMap = await _database.query('empleados');
+  _empleados = empleadosMap.map((e) => Empleado.fromMap(e)).toList();
+  notifyListeners();
+  return _empleados;  // ← Ahora devuelve la lista de empleados
+}
+
 
   Future<void> actualizarEmpleado(Empleado empleado) async {
     await _database.update(

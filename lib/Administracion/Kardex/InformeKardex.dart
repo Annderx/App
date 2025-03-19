@@ -1,10 +1,12 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:pdf/pdf.dart';
 import 'package:provider/provider.dart';
 import 'kardex_provider.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
-import 'Producto.dart';
+import 'Kardex.dart';
 
 class InformeKardex extends StatelessWidget {
   const InformeKardex({super.key});

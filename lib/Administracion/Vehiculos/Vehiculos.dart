@@ -27,7 +27,12 @@ class _RegistroVehiculosState extends State<RegistroVehiculos> {
   String? _combustibleSeleccionado;
   String? _tipoVehiculoSeleccionado;
 
-  final List<String> _tiposCombustible = ['Gasolina', 'Diésel', 'Eléctrico', 'Híbrido'];
+  final List<String> _tiposCombustible = [
+    'Gasolina',
+    'Diésel',
+    'Eléctrico',
+    'Híbrido'
+  ];
   final List<String> _tiposVehiculo = ['Sedán', 'SUV', 'Camión', 'Motocicleta'];
 
   void _limpiarCasillas() {
@@ -72,7 +77,8 @@ class _RegistroVehiculosState extends State<RegistroVehiculos> {
                     labelText: 'Razón Social',
                     icon: Icon(Icons.business),
                   ),
-                  validator: (value) => value!.isEmpty ? 'Ingrese la razón social' : null,
+                  validator: (value) =>
+                      value!.isEmpty ? 'Ingrese la razón social' : null,
                 ),
                 TextFormField(
                   controller: _contactoController,
@@ -80,7 +86,8 @@ class _RegistroVehiculosState extends State<RegistroVehiculos> {
                     labelText: 'Contacto',
                     icon: Icon(Icons.person),
                   ),
-                  validator: (value) => value!.isEmpty ? 'Ingrese el contacto' : null,
+                  validator: (value) =>
+                      value!.isEmpty ? 'Ingrese el contacto' : null,
                 ),
                 Row(
                   children: [
@@ -91,7 +98,8 @@ class _RegistroVehiculosState extends State<RegistroVehiculos> {
                           labelText: 'Modelo',
                           icon: Icon(Icons.directions_car),
                         ),
-                        validator: (value) => value!.isEmpty ? 'Ingrese el modelo' : null,
+                        validator: (value) =>
+                            value!.isEmpty ? 'Ingrese el modelo' : null,
                       ),
                     ),
                     Expanded(
@@ -101,7 +109,8 @@ class _RegistroVehiculosState extends State<RegistroVehiculos> {
                           labelText: 'Marca',
                           icon: Icon(Icons.branding_watermark),
                         ),
-                        validator: (value) => value!.isEmpty ? 'Ingrese la marca' : null,
+                        validator: (value) =>
+                            value!.isEmpty ? 'Ingrese la marca' : null,
                       ),
                     ),
                   ],
@@ -151,7 +160,8 @@ class _RegistroVehiculosState extends State<RegistroVehiculos> {
                           labelText: 'Placa',
                           icon: Icon(Icons.directions_car),
                         ),
-                        validator: (value) => value!.isEmpty ? 'Ingrese la placa' : null,
+                        validator: (value) =>
+                            value!.isEmpty ? 'Ingrese la placa' : null,
                       ),
                     ),
                     Expanded(
@@ -161,7 +171,8 @@ class _RegistroVehiculosState extends State<RegistroVehiculos> {
                           labelText: 'Año de Fabricación',
                           icon: Icon(Icons.calendar_today),
                         ),
-                        validator: (value) => value!.isEmpty ? 'Ingrese el año' : null,
+                        validator: (value) =>
+                            value!.isEmpty ? 'Ingrese el año' : null,
                       ),
                     ),
                   ],
@@ -175,7 +186,8 @@ class _RegistroVehiculosState extends State<RegistroVehiculos> {
                           labelText: 'Año de Modelo',
                           icon: Icon(Icons.calendar_today),
                         ),
-                        validator: (value) => value!.isEmpty ? 'Ingrese el año' : null,
+                        validator: (value) =>
+                            value!.isEmpty ? 'Ingrese el año' : null,
                       ),
                     ),
                     Expanded(
@@ -185,7 +197,9 @@ class _RegistroVehiculosState extends State<RegistroVehiculos> {
                           labelText: 'N° de Motor',
                           icon: Icon(Icons.build),
                         ),
-                        validator: (value) => value!.isEmpty ? 'Ingrese el número de motor' : null,
+                        validator: (value) => value!.isEmpty
+                            ? 'Ingrese el número de motor'
+                            : null,
                       ),
                     ),
                   ],
@@ -196,7 +210,8 @@ class _RegistroVehiculosState extends State<RegistroVehiculos> {
                     labelText: 'VIN',
                     icon: Icon(Icons.confirmation_number),
                   ),
-                  validator: (value) => value!.isEmpty ? 'Ingrese el VIN' : null,
+                  validator: (value) =>
+                      value!.isEmpty ? 'Ingrese el VIN' : null,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -214,11 +229,16 @@ class _RegistroVehiculosState extends State<RegistroVehiculos> {
                             combustible: _combustibleSeleccionado!,
                             tipoVehiculo: _tipoVehiculoSeleccionado!,
                             placa: _placaController.text,
-                            anioFabricacion: _anioFabricacionController.text,
-                            anioModelo: _anioModeloController.text,
+                            anioFabricacion:
+                                int.tryParse(_anioFabricacionController.text) ??
+                                    0, // Conversión segura
+                            anioModelo:
+                                int.tryParse(_anioModeloController.text) ??
+                                    0, // Conversión segura
                             nroMotor: _nroMotorController.text,
                             vin: _vinController.text,
                           );
+
                           Provider.of<VehiculoProvider>(context, listen: false)
                               .agregarVehiculo(vehiculo);
                           _limpiarCasillas();

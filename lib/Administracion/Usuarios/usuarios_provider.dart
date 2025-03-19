@@ -2,45 +2,33 @@ import 'package:flutter/material.dart';
 import 'ClasesUsuarios.dart';
 
 class UsuarioProvider with ChangeNotifier {
-  final Map<int, Usuario> _usuarios = {}; // Cambiado a Map para búsquedas más rápidas
+  final List<Usuario> _usuarios = [];
 
-  List<Usuario> get usuarios => _usuarios.values.toList();
+  List<Usuario> get usuarios => List.unmodifiable(_usuarios);
 
   void agregarUsuario(Usuario usuario) {
-    _usuarios[usuario.id] = usuario;
+    _usuarios.add(usuario);
     notifyListeners();
   }
 
   void eliminarUsuario(int id) {
-    _usuarios.remove(id);
+    _usuarios.removeWhere((usuario) => usuario.id == id);
     notifyListeners();
   }
 
-  void actualizarUsuario(Usuario usuario) {
-    if (_usuarios.containsKey(usuario.id)) {
-      _usuarios[usuario.id] = usuario;
+  void actualizarUsuario(int id, String nuevoNombre, String nuevoTipo) {
+    int index = _usuarios.indexWhere((usuario) => usuario.id == id);
+    if (index != -1) {
+      _usuarios[index] = Usuario(
+        id: id,
+        codigoUsuario: _usuarios[index].codigoUsuario,
+        nombre: nuevoNombre,
+        codigoEmpleado: _usuarios[index].codigoEmpleado,
+        tipoUsuario: nuevoTipo,
+        nombreUsuario: _usuarios[index].nombreUsuario,
+        contrasena: _usuarios[index].contrasena,
+      );
       notifyListeners();
     }
-  }
-
-  Usuario? obtenerUsuarioPorId(int id) {
-    return _usuarios[id];
-  }
-
-  // Métodos adicionales para cargar y guardar en una base de datos
-  Future<void> cargarUsuariosDesdeDB() async {
-    // Simulación de carga de datos desde una API o BD
-    await Future.delayed(const Duration(seconds: 1));
-    _usuarios.clear();
-    _usuarios[1] = Usuario(
-      id: 1,
-      codigoUsuario: 'USR-001',
-      nombre: 'Juan Pérez',
-      codigoEmpleado: 'EMP-100',
-      tipoUsuario: 'Administrador',
-      nombreUsuario: 'jperez',
-      contrasena: '123456',
-    );
-    notifyListeners();
   }
 }

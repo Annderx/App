@@ -55,28 +55,29 @@ class _RegistroEmpleadoState extends State<RegistroEmpleado> {
   }
 
   void _guardarEmpleado() {
-    if (!_formKey.currentState!.validate()) return;
+  if (!_formKey.currentState!.validate()) return;
 
-    final empleadoProvider = Provider.of<EmpleadoProvider>(context, listen: false);
-    final nuevoEmpleado = Empleado(
-      codigo: _codigoController.text,
-      nombre: _nombreController.text,
-      area: _area!,
-      tipo: _tipo!,
-      funcion: _funcion!,
-      condicion: _condicion!,
-      telefono: _telefonoController.text,
-      dni: _dniController.text,
-      direccion: _direccionController.text,
-      sueldo: _sueldoController.text,
-      edad: _edadController.text,
-      fechaNacimiento: _fechaNacimiento,
-    );
+  final empleadoProvider = Provider.of<EmpleadoProvider>(context, listen: false);
 
-    empleadoProvider.agregarEmpleado(nuevoEmpleado);
+  final nuevoEmpleado = Empleado(
+    codigo: _codigoController.text,
+    nombre: _nombreController.text,
+    area: _area!,
+    tipo: _tipo!,
+    funcion: _funcion!,
+    condicion: _condicion!,
+    telefono: _telefonoController.text,
+    dni: _dniController.text,
+    direccion: _direccionController.text,
+    sueldo: double.tryParse(_sueldoController.text) ?? 0.0, // 🔹 Conversión segura
+    edad: int.tryParse(_edadController.text) ?? 0, // 🔹 Conversión segura
+    fechaNacimiento: _fechaNacimiento,
+  );
 
-    _mostrarDialogoConfirmacion();
-  }
+  empleadoProvider.agregarEmpleado(nuevoEmpleado);
+  _mostrarDialogoConfirmacion();
+}
+
 
   void _mostrarDialogoConfirmacion() {
     showDialog(

@@ -25,8 +25,12 @@ class ProductoProvider with ChangeNotifier {
   }
 
   Producto? obtenerProductoPorId(int id) {
-    return _productos.firstWhere((producto) => producto.id == id, orElse: () => null);
+  try {
+    return _productos.firstWhere((producto) => producto.id == id);
+  } catch (e) {
+    return null; // Devuelve `null` si no encuentra el producto
   }
+}
 
   List<Producto> buscarPorCategoria(String categoria) {
     return _productos.where((producto) => producto.categoria.toLowerCase() == categoria.toLowerCase()).toList();
