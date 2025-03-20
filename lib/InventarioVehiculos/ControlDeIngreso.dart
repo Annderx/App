@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:myapp/InventarioVehiculos/DocumentoSalida.dart';
 import 'package:printing/printing.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'package:flutter/services.dart';
 
 class ControlIngresoScreen extends StatefulWidget {
   const ControlIngresoScreen({super.key});
