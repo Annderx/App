@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import "package:myapp/Almacen/EntradaSalida/ClasesEntrada.dart";
-import 'package:myapp/Almacen/EntradaSalida/entrada_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:myapp/Almacen/EntradaSalida/ClasesEntrada.dart';
+import 'package:myapp/Almacen/EntradaSalida/entrada_provider.dart';
 
 class RegistroEntradaProductos extends StatefulWidget {
   const RegistroEntradaProductos({super.key});
@@ -30,18 +30,19 @@ class _RegistroEntradaProductosState extends State<RegistroEntradaProductos> {
   DateTime? _fecha;
 
   @override
-  void initState() {
-    super.initState();
-    _cargarDatos(); // Llama a la función para cargar los datos iniciales
-  }
-
-  Future<void> _cargarDatos() async {
-    // Aquí puedes cargar los datos desde una base de datos o API
-    // Por ejemplo:
-    // _proveedores = await obtenerProveedores();
-
-    // Luego, actualiza el estado para que los DropdownButton se actualicen
-    setState(() {});
+  void dispose() {
+    _codigoEntradaController.dispose();
+    _codigoProductoController.dispose();
+    _descripcionProductoController.dispose();
+    _cantidadProductoController.dispose();
+    _precioProductoController.dispose();
+    _marcaProductoController.dispose();
+    _unidadProductoController.dispose();
+    _empleadoController.dispose();
+    _proveedorController.dispose();
+    _clienteController.dispose();
+    _placaVehiculoController.dispose();
+    super.dispose();
   }
 
   void _limpiarCasillas() {
@@ -56,169 +57,166 @@ class _RegistroEntradaProductosState extends State<RegistroEntradaProductos> {
     _proveedorController.clear();
     _clienteController.clear();
     _placaVehiculoController.clear();
-    _fecha = null;
+    setState(() => _fecha = null);
+  }
 
-    setState(() {}); // Actualiza el estado para limpiar la fecha
+  Future<void> _seleccionarFecha() async {
+    DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime.now(),
+    );
+
+    if (pickedDate != null) {
+      setState(() {
+        _fecha = pickedDate;
+      });
+    }
+  }
+
+  Widget _campoTexto(
+      {required TextEditingController controller,
+      required String label,
+      TextInputType? tipo,
+      bool enabled = true}) {
+    return TextFormField(
+      controller: controller,
+      keyboardType: tipo ?? TextInputType.text,
+      enabled: enabled,
+      decoration: InputDecoration(
+        labelText: label,
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      ),
+      validator: (value) {
+        if (value == null || value.isEmpty) return 'Campo requerido';
+        return null;
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Registro de Entrada de Productos')),
-      body: SingleChildScrollView(
+      body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Código de entrada y fecha en la misma línea
-              Row(
-                children: [
-                  Expanded(
-                    child: TextFormField(
-                      controller: _codigoEntradaController,
-                      decoration: const InputDecoration(
-                        labelText: 'CODIGO ENTRADA:',
-                      ),
-                      enabled: false,
-                    ),
-                  ),
-                  Expanded(
-                    child: Row(
-                      children: [
-                        Text(
-                          _fecha != null
-                              ? 'Fecha: ${_fecha!.toString().split(' ')[0]}'
-                              : 'Fecha: ',
+        child: SingleChildScrollView(
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                // Código de entrada y fecha
+                Row(
+                  children: [
+                    Expanded(child: _campoTexto(controller: _codigoEntradaController, label: 'Código de Entrada', enabled: false)),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: _seleccionarFecha,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                _fecha != null ? '${_fecha!.day}/${_fecha!.month}/${_fecha!.year}' : 'Seleccionar Fecha',
+                                style: const TextStyle(fontSize: 16),
+                              ),
+                              const Icon(Icons.calendar_today, color: Colors.grey),
+                            ],
+                          ),
                         ),
-                        IconButton(
-                          onPressed: () async {
-                            final DateTime? picked = await showDatePicker(
-                              context: context,
-                              initialDate: DateTime.now(),
-                              firstDate: DateTime(1900),
-                              lastDate: DateTime.now(),
-                            );
-                            if (picked != null && picked != _fecha) {
-                              setState(() {
-                                _fecha = picked;
-                              });
-                            }
-                          },
-                          icon: const Icon(Icons.calendar_today),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              // Datos del empleado y proveedor en la misma línea
-              Row(
-                children: [
-                  Expanded(
-                    child: TextFormField(
-                      controller: _empleadoController,
-                      decoration: const InputDecoration(labelText: 'EMPLEADO:'),
-                    ),
-                  ),
-                  Expanded(
-                    child: TextFormField(
-                      controller: _proveedorController,
-                      decoration: const InputDecoration(
-                        labelText: 'PROVEEDOR:',
                       ),
                     ),
-                  ),
-                ],
-              ),
-              // Datos del cliente y vehículo en la misma línea
-              Row(
-                children: [
-                  Expanded(
-                    child: TextFormField(
-                      controller: _clienteController,
-                      decoration: const InputDecoration(labelText: 'CLIENTE:'),
-                    ),
-                  ),
-                  Expanded(
-                    child: TextFormField(
-                      controller: _placaVehiculoController,
-                      decoration: const InputDecoration(labelText: 'PLACA:'),
-                    ),
-                  ),
-                ],
-              ),
-              // Datos del producto
-              TextFormField(
-                controller: _codigoProductoController,
-                decoration: const InputDecoration(
-                  labelText: 'CODIGO PRODUCTO:',
+                  ],
                 ),
-              ),
-              TextFormField(
-                controller: _marcaProductoController,
-                decoration: const InputDecoration(labelText: 'MARCA:'),
-              ),
-              TextFormField(
-                controller: _descripcionProductoController,
-                decoration: const InputDecoration(labelText: 'DESCRIPCION:'),
-              ),
-              TextFormField(
-                controller: _unidadProductoController,
-                decoration: const InputDecoration(labelText: 'UNIDAD:'),
-              ),
-              TextFormField(
-                controller: _cantidadProductoController,
-                decoration: const InputDecoration(labelText: 'CANTIDAD:'),
-              ),
-              TextFormField(
-                controller: _precioProductoController,
-                decoration: const InputDecoration(labelText: 'PRECIO:'),
-              ),
-              // Botones en la misma línea
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        final entrada = EntradaProducto(
-                          id: DateTime.now().millisecondsSinceEpoch,
-                          codigoEntrada: _codigoEntradaController.text,
-                          codigoProducto: _codigoProductoController.text,
-                          descripcionProducto:
-                              _descripcionProductoController.text,
-                          cantidadProducto: int.parse(
-                            _cantidadProductoController.text,
-                          ),
-                          precioProducto: double.parse(
-                            _precioProductoController.text,
-                          ),
-                          marcaProducto: _marcaProductoController.text,
-                          unidadProducto: _unidadProductoController.text,
-                          empleado: _empleadoController.text,
-                          proveedor: _proveedorController.text,
-                          cliente: _clienteController.text,
-                          placaVehiculo: _placaVehiculoController.text,
-                          fecha: _fecha!,
-                        );
-                        Provider.of<EntradaProviderAlmacen>(
-                          context,
-                          listen: false,
-                        ).agregarEntrada(entrada);
-                        _limpiarCasillas();
-                      }
-                    },
-                    child: const Text('GUARDAR'),
-                  ),
-                  ElevatedButton(
-                    onPressed: _limpiarCasillas,
-                    child: const Text('LIMPIAR'),
-                  ),
-                ],
-              ),
-            ],
+                const SizedBox(height: 16),
+
+                // Empleado y Proveedor
+                Row(
+                  children: [
+                    Expanded(child: _campoTexto(controller: _empleadoController, label: 'Empleado')),
+                    const SizedBox(width: 10),
+                    Expanded(child: _campoTexto(controller: _proveedorController, label: 'Proveedor')),
+                  ],
+                ),
+                const SizedBox(height: 16),
+
+                // Cliente y Placa del Vehículo
+                Row(
+                  children: [
+                    Expanded(child: _campoTexto(controller: _clienteController, label: 'Cliente')),
+                    const SizedBox(width: 10),
+                    Expanded(child: _campoTexto(controller: _placaVehiculoController, label: 'Placa del Vehículo')),
+                  ],
+                ),
+                const SizedBox(height: 16),
+
+                // Datos del Producto
+                _campoTexto(controller: _codigoProductoController, label: 'Código del Producto'),
+                const SizedBox(height: 12),
+                _campoTexto(controller: _marcaProductoController, label: 'Marca'),
+                const SizedBox(height: 12),
+                _campoTexto(controller: _descripcionProductoController, label: 'Descripción'),
+                const SizedBox(height: 12),
+
+                // Unidad, Cantidad y Precio
+                Row(
+                  children: [
+                    Expanded(child: _campoTexto(controller: _unidadProductoController, label: 'Unidad')),
+                    const SizedBox(width: 10),
+                    Expanded(child: _campoTexto(controller: _cantidadProductoController, label: 'Cantidad', tipo: TextInputType.number)),
+                    const SizedBox(width: 10),
+                    Expanded(child: _campoTexto(controller: _precioProductoController, label: 'Precio', tipo: TextInputType.number)),
+                  ],
+                ),
+                const SizedBox(height: 20),
+
+                // Botones
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          final entrada = EntradaProducto(
+                            id: DateTime.now().millisecondsSinceEpoch,
+                            codigoEntrada: _codigoEntradaController.text,
+                            codigoProducto: _codigoProductoController.text,
+                            descripcionProducto: _descripcionProductoController.text,
+                            cantidadProducto: int.parse(_cantidadProductoController.text),
+                            precioProducto: double.parse(_precioProductoController.text),
+                            marcaProducto: _marcaProductoController.text,
+                            unidadProducto: _unidadProductoController.text,
+                            empleado: _empleadoController.text,
+                            proveedor: _proveedorController.text,
+                            cliente: _clienteController.text,
+                            placaVehiculo: _placaVehiculoController.text,
+                            fecha: _fecha!,
+                          );
+                          Provider.of<EntradaProviderAlmacen>(context, listen: false).agregarEntrada(entrada);
+                          _limpiarCasillas();
+                        }
+                      },
+                      icon: const Icon(Icons.save),
+                      label: const Text('Guardar'),
+                    ),
+                    ElevatedButton.icon(
+                      onPressed: _limpiarCasillas,
+                      icon: const Icon(Icons.refresh),
+                      label: const Text('Limpiar'),
+                      style: ElevatedButton.styleFrom(backgroundColor: Colors.grey[600]),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),

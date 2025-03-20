@@ -1,24 +1,10 @@
 import 'package:flutter/material.dart';
 
-/*class Pagossinplanilla extends StatelessWidget {
-  const Pagossinplanilla({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Registro de Pagos (Coloboradores sin planilla)'),
-      ),      
-    );
-  }
-}*/
-
 class RegistroPagoSinPlanilla extends StatefulWidget {
   const RegistroPagoSinPlanilla({super.key});
 
   @override
-  State<RegistroPagoSinPlanilla> createState() =>
-      _RegistroPagoSinPlanillaState();
+  State<RegistroPagoSinPlanilla> createState() => _RegistroPagoSinPlanillaState();
 }
 
 class _RegistroPagoSinPlanillaState extends State<RegistroPagoSinPlanilla> {
@@ -39,22 +25,6 @@ class _RegistroPagoSinPlanillaState extends State<RegistroPagoSinPlanilla> {
 
   DateTime? _fecha;
 
-  @override
-  void initState() {
-    super.initState();
-    _cargarDatos(); // Llama a la función para cargar los datos iniciales
-  }
-
-  Future<void> _cargarDatos() async {
-    // Aquí puedes cargar los datos desde una base de datos o API
-    // Por ejemplo:
-    // _proveedores = await obtenerProveedores();
-
-    // Luego, actualiza el estado para que los DropdownButton se actualicen
-    setState(() {});
-  }
-
-  // ignore: unused_element
   void _limpiarCasillas() {
     _colaboradorController.clear();
     _diasMesController.clear();
@@ -68,140 +38,117 @@ class _RegistroPagoSinPlanillaState extends State<RegistroPagoSinPlanilla> {
     _otrosDescuentosController.clear();
     _sueldoNetoController.clear();
     _fecha = null;
-
-    setState(() {}); // Actualiza el estado para limpiar la fecha
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Registro de Pago de Colaboradores Sin Planilla'),
+        title: const Text('Registro de Pago - Sin Planilla'),
+        centerTitle: true,
+        elevation: 4,
       ),
-      body: SingleChildScrollView(
+      body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Fecha
-              Row(
-                children: [
-                  Text(
-                    _fecha != null
-                        ? 'Fecha: ${_fecha!.toString().split(' ')[0]}'
-                        : 'Fecha: ',
-                  ),
-                  IconButton(
-                    onPressed: () async {
-                      final DateTime? picked = await showDatePicker(
-                        context: context,
-                        initialDate: DateTime.now(),
-                        firstDate: DateTime(1900),
-                        lastDate: DateTime.now(),
-                      );
-                      if (picked != null && picked != _fecha) {
-                        setState(() {
-                          _fecha = picked;
-                        });
-                      }
-                    },
-                    icon: const Icon(Icons.calendar_today),
-                  ),
-                ],
-              ),
-              // Colaborador
-              TextFormField(
-                controller: _colaboradorController,
-                decoration: const InputDecoration(labelText: 'COLABORADOR:'),
-              ),
-              // Días del mes, días laborados y días faltados en la misma línea
-              Row(
-                children: [
-                  Expanded(
-                    child: TextFormField(
-                      controller: _diasMesController,
-                      decoration: const InputDecoration(labelText: 'DIAS DEL MES:'),
-                    ),
-                  ),
-                  Expanded(
-                    child: TextFormField(
-                      controller: _diasLaboradosController,
-                      decoration: const InputDecoration(labelText: 'DIAS LABORADOS:'),
-                    ),
-                  ),
-                  Expanded(
-                    child: TextFormField(
-                      controller: _diasFaltadosController,
-                      decoration: const InputDecoration(labelText: 'DIAS FALTADOS:'),
-                    ),
-                  ),
-                ],
-              ),
-              // Sueldo base inicial y descuento faltas en la misma línea
-              Row(
-                children: [
-                  Expanded(
-                    child: TextFormField(
-                      controller: _sueldoBaseInicialController,
-                      decoration: const InputDecoration(labelText: 'SUELDO BASE INICIAL:'),
-                    ),
-                  ),
-                  Expanded(
-                    child: TextFormField(
-                      controller: _descuentoFaltasController,
-                      decoration: const InputDecoration(labelText: 'DESCUENTO FALTAS:'),
-                    ),
-                  ),
-                ],
-              ),
-              // Sueldo base
-              TextFormField(
-                controller: _sueldoBaseController,
-                decoration: const InputDecoration(labelText: 'SUELDO BASE:'),
-              ),
-              // Bono extraordinario, adelanto y otros descuentos en la misma línea
-              Row(
-                children: [
-                  Expanded(
-                    child: TextFormField(
-                      controller: _bonoExtraordinarioController,
-                      decoration: const InputDecoration(labelText: 'BONO EXTRAORDINARIO:'),
-                    ),
-                  ),
-                  Expanded(
-                    child: TextFormField(
-                      controller: _adelantoController,
-                      decoration: const InputDecoration(labelText: 'ADELANTO:'),
-                    ),
-                  ),
-                  Expanded(
-                    child: TextFormField(
-                      controller: _otrosDescuentosController,
-                      decoration: const InputDecoration(labelText: 'OTROS DESCUENTOS:'),
-                    ),
-                  ),
-                ],
-              ),
-              // Sueldo neto
-              TextFormField(
-                controller: _sueldoNetoController,
-                decoration: const InputDecoration(labelText: 'SUELDO NETO:'),
-              ),
-              // Botón guardar
-              ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    // Guardar los datos
-                  }
-                },
-                child: const Text('GUARDAR'),
-              ),
-            ],
+        child: SingleChildScrollView(
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                _buildFechaSelector(),
+                _buildTextField(_colaboradorController, 'Colaborador', Icons.person),
+                _buildRowFields([
+                  _buildTextField(_diasMesController, 'Días del Mes', Icons.calendar_today, isNumeric: true),
+                  _buildTextField(_diasLaboradosController, 'Días Laborados', Icons.work, isNumeric: true),
+                  _buildTextField(_diasFaltadosController, 'Días Faltados', Icons.error, isNumeric: true),
+                ]),
+                _buildRowFields([
+                  _buildTextField(_sueldoBaseInicialController, 'Sueldo Base Inicial', Icons.attach_money, isNumeric: true),
+                  _buildTextField(_descuentoFaltasController, 'Descuento Faltas', Icons.money_off, isNumeric: true),
+                ]),
+                _buildTextField(_sueldoBaseController, 'Sueldo Base', Icons.attach_money, isNumeric: true),
+                _buildRowFields([
+                  _buildTextField(_bonoExtraordinarioController, 'Bono Extraordinario', Icons.card_giftcard, isNumeric: true),
+                  _buildTextField(_adelantoController, 'Adelanto', Icons.money, isNumeric: true),
+                  _buildTextField(_otrosDescuentosController, 'Otros Descuentos', Icons.remove_circle, isNumeric: true),
+                ]),
+                _buildTextField(_sueldoNetoController, 'Sueldo Neto', Icons.account_balance_wallet, isNumeric: true),
+                const SizedBox(height: 20),
+              ],
+            ),
           ),
         ),
       ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          if (_formKey.currentState!.validate()) {
+            _limpiarCasillas();
+          }
+        },
+        label: const Text('Guardar'),
+        icon: const Icon(Icons.save),
+        backgroundColor: Colors.green,
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+    );
+  }
+
+  Widget _buildFechaSelector() {
+    return Card(
+      margin: const EdgeInsets.symmetric(vertical: 10),
+      elevation: 3,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      child: ListTile(
+        title: Text(
+          _fecha != null ? 'Fecha: ${_fecha!.toString().split(' ')[0]}' : 'Seleccionar Fecha',
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
+        leading: const Icon(Icons.date_range, color: Colors.blue),
+        trailing: IconButton(
+          icon: const Icon(Icons.calendar_today, color: Colors.blue),
+          onPressed: () async {
+            final DateTime? picked = await showDatePicker(
+              context: context,
+              initialDate: DateTime.now(),
+              firstDate: DateTime(1900),
+              lastDate: DateTime.now(),
+            );
+            if (picked != null && picked != _fecha) {
+              setState(() {
+                _fecha = picked;
+              });
+            }
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTextField(TextEditingController controller, String label, IconData icon, {bool isNumeric = false}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6),
+      child: TextFormField(
+        controller: controller,
+        keyboardType: isNumeric ? TextInputType.number : TextInputType.text,
+        decoration: InputDecoration(
+          labelText: label,
+          prefixIcon: Icon(icon),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+        ),
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return 'Campo requerido';
+          }
+          return null;
+        },
+      ),
+    );
+  }
+
+  Widget _buildRowFields(List<Widget> fields) {
+    return Row(
+      children: fields.map((field) => Expanded(child: Padding(padding: const EdgeInsets.all(4.0), child: field))).toList(),
     );
   }
 }

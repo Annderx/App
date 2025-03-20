@@ -1,54 +1,64 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/Taller/OrdenDeTrabajo/MenuNavegacionTrabajo.dart';
-import 'package:myapp/Taller/OrdenDeTrabajo/OrdenTrabajo.dart';
 import 'package:myapp/Taller/Presupuesto/MenuNavegacionPresupuesto.dart';
-import 'package:myapp/Taller/Presupuesto/Presupuesto.dart';
 
-class Areataller extends StatelessWidget {
-  const Areataller({super.key});
+class AreaTaller extends StatelessWidget {
+  const AreaTaller({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Gestion Taller'),
+        title: const Text('Gestión de Taller'),
+        centerTitle: true,
+        elevation: 4,
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0), // Padding general
-        child: Center( // Centrar el contenido horizontalmente
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center, // Centrar verticalmente
-            children: [
-              _buildButton(context, 'Orden Trabajo', MenuOrdenesTrabajo()),
-              const SizedBox(height: 16),
-              _buildButton(context, 'Presupuesto', const MenuPresupuesto()),
-            ],
-          ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: GridView.count(
+          crossAxisCount: 2, // Dos columnas para mejor distribución
+          crossAxisSpacing: 16,
+          mainAxisSpacing: 16,
+          childAspectRatio: 1.3,
+          children: [
+            _buildCard(context, 'Orden de Trabajo', Icons.build, const MenuOrdenesTrabajo()),
+            _buildCard(context, 'Presupuesto', Icons.request_quote, const MenuPresupuesto()),
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildButton(BuildContext context, String text, Widget destination) {
-    return SizedBox(
-      width: 250, // Ancho fijo para todos los botones
-      child: ElevatedButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => destination),
-          );
-        },
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.blue,
-          foregroundColor: Colors.white,
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-          textStyle: const TextStyle(fontSize: 18),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8.0), // Bordes redondeados
+  Widget _buildCard(BuildContext context, String text, IconData icon, Widget destination) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(context, MaterialPageRoute(builder: (context) => destination));
+      },
+      child: Card(
+        elevation: 6,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            gradient: LinearGradient(
+              colors: [Colors.orangeAccent, Colors.deepOrange], // Fondo degradado
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon, size: 40, color: Colors.white),
+              const SizedBox(height: 8),
+              Text(
+                text,
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+              ),
+            ],
           ),
         ),
-        child: Text(text),
       ),
     );
   }

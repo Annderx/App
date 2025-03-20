@@ -2,49 +2,55 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'ClasesPrestamos.dart';
 import 'prestamos_provider.dart';
+import 'package:flutter/services.dart'; // Para formatear entradas numéricas
 
 class RegistroPrestamosProductos extends StatefulWidget {
   const RegistroPrestamosProductos({super.key});
 
   @override
-  State<RegistroPrestamosProductos> createState() =>
-      _RegistroPrestamosProductosState();
+  State<RegistroPrestamosProductos> createState() => _RegistroPrestamosProductosState();
 }
 
 class _RegistroPrestamosProductosState extends State<RegistroPrestamosProductos> {
   final _formKey = GlobalKey<FormState>();
 
+  // Controladores de texto
   final _codigoPrestamoController = TextEditingController();
   final _codigoEncargadoController = TextEditingController();
   final _nombreController = TextEditingController();
   final _descripcionController = TextEditingController();
-  final _medidaController = TextEditingController();
   final _cantidadController = TextEditingController();
   final _prestatarioController = TextEditingController();
 
   DateTime? _fechaPrestamo;
   DateTime? _fechaDevolucion;
 
+  // Variables para dropdown
+  String? _medidaSeleccionada;
+
   @override
-  void initState() {
-    super.initState();
-    _cargarDatos();
+  void dispose() {
+    // Liberar memoria de controladores
+    _codigoPrestamoController.dispose();
+    _codigoEncargadoController.dispose();
+    _nombreController.dispose();
+    _descripcionController.dispose();
+    _cantidadController.dispose();
+    _prestatarioController.dispose();
+    super.dispose();
   }
 
-  Future<void> _cargarDatos() async {
-    setState(() {});
-  }
-
-  void _limpiarCasillas() {
+  void _limpiarCampos() {
     _codigoPrestamoController.clear();
     _codigoEncargadoController.clear();
     _nombreController.clear();
     _descripcionController.clear();
-    _medidaController.clear();
     _cantidadController.clear();
     _prestatarioController.clear();
     _fechaPrestamo = null;
     _fechaDevolucion = null;
+    _medidaSeleccionada = null;
+
     setState(() {});
   }
 
@@ -53,113 +59,147 @@ class _RegistroPrestamosProductosState extends State<RegistroPrestamosProductos>
     return Scaffold(
       appBar: AppBar(
         title: const Text('Registro de Préstamos de Productos'),
+        centerTitle: true,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              TextFormField(
-                controller: _codigoPrestamoController,
-                decoration: const InputDecoration(labelText: 'CODIGO PRESTAMO:'),
-                enabled: false,
+              // Código de Préstamo y Fecha de Préstamo
+              Card(
+                elevation: 4,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Column(
+                    children: [
+                      TextFormField(
+                        controller: _codigoPrestamoController,
+                        decoration: const InputDecoration(labelText: 'Código de Préstamo'),
+                        enabled: false,
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              _fechaPrestamo != null
+                                  ? 'Fecha de Préstamo: ${_fechaPrestamo!.toString().split(' ')[0]}'
+                                  : 'Seleccione una Fecha',
+                            ),
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.calendar_today, color: Colors.blue),
+                            onPressed: () async {
+                              final DateTime? picked = await showDatePicker(
+                                context: context,
+                                initialDate: DateTime.now(),
+                                firstDate: DateTime(2000),
+                                lastDate: DateTime.now(),
+                              );
+                              if (picked != null) {
+                                setState(() {
+                                  _fechaPrestamo = picked;
+                                });
+                              }
+                            },
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
               ),
-              TextFormField(
-                controller: _codigoEncargadoController,
-                decoration: const InputDecoration(labelText: 'CODIGO ENCARGADO:'),
-              ),
-              TextFormField(
-                controller: _nombreController,
-                decoration: const InputDecoration(labelText: 'NOMBRE:'),
-              ),
-              TextFormField(
-                controller: _descripcionController,
-                decoration: const InputDecoration(labelText: 'DESCRIPCION:'),
-              ),
-              Row(
+
+              const SizedBox(height: 16),
+
+              // Información del Encargado y Préstamo
+              ExpansionTile(
+                title: const Text('Datos del Encargado y Producto'),
                 children: [
-                  Expanded(
-                    child: Row(
-                      children: [
-                        Text(
-                          _fechaPrestamo != null
-                              ? 'Fecha Pres.: ${_fechaPrestamo!.toString().split(' ')[0]}'
-                              : 'Fecha Pres.: ',
-                        ),
-                        IconButton(
-                          onPressed: () async {
-                            final DateTime? picked = await showDatePicker(
-                              context: context,
-                              initialDate: DateTime.now(),
-                              firstDate: DateTime(1900),
-                              lastDate: DateTime.now(),
-                            );
-                            if (picked != null && picked != _fechaPrestamo) {
-                              setState(() {
-                                _fechaPrestamo = picked;
-                              });
-                            }
-                          },
-                          icon: const Icon(Icons.calendar_today),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    child: Row(
-                      children: [
-                        Text(
-                          _fechaDevolucion != null
-                              ? 'Fecha Dev.: ${_fechaDevolucion!.toString().split(' ')[0]}'
-                              : 'Fecha Dev.: ',
-                        ),
-                        IconButton(
-                          onPressed: () async {
-                            final DateTime? picked = await showDatePicker(
-                              context: context,
-                              initialDate: DateTime.now(),
-                              firstDate: DateTime(1900),
-                              lastDate: DateTime.now(),
-                            );
-                            if (picked != null && picked != _fechaDevolucion) {
-                              setState(() {
-                                _fechaDevolucion = picked;
-                              });
-                            }
-                          },
-                          icon: const Icon(Icons.calendar_today),
-                        ),
-                      ],
-                    ),
-                  ),
+                  _buildTextField(_codigoEncargadoController, 'Código Encargado'),
+                  _buildTextField(_nombreController, 'Nombre del Producto'),
+                  _buildTextField(_descripcionController, 'Descripción del Producto'),
                 ],
               ),
-              Row(
-                children: [
-                  Expanded(
-                    child: TextFormField(
-                      controller: _medidaController,
-                      decoration: const InputDecoration(labelText: 'MEDIDA:'),
-                    ),
+
+              const SizedBox(height: 16),
+
+              // Selección de Medida y Cantidad
+              Card(
+                elevation: 4,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Column(
+                    children: [
+                      DropdownButtonFormField<String>(
+                        value: _medidaSeleccionada,
+                        decoration: const InputDecoration(labelText: 'Medida'),
+                        items: ['Unidad', 'Caja', 'Paquete']
+                            .map((medida) => DropdownMenuItem(value: medida, child: Text(medida)))
+                            .toList(),
+                        onChanged: (value) => setState(() => _medidaSeleccionada = value),
+                      ),
+                      _buildNumericField(_cantidadController, 'Cantidad'),
+                    ],
                   ),
-                  Expanded(
-                    child: TextFormField(
-                      controller: _cantidadController,
-                      decoration: const InputDecoration(labelText: 'CANTIDAD:'),
-                    ),
+                ),
+              ),
+
+              const SizedBox(height: 16),
+
+              // Datos del Prestatario y Fecha de Devolución
+              Card(
+                elevation: 4,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Column(
+                    children: [
+                      _buildTextField(_prestatarioController, 'Prestatario'),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              _fechaDevolucion != null
+                                  ? 'Fecha de Devolución: ${_fechaDevolucion!.toString().split(' ')[0]}'
+                                  : 'Seleccione una Fecha',
+                            ),
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.calendar_today, color: Colors.redAccent),
+                            onPressed: () async {
+                              final DateTime? picked = await showDatePicker(
+                                context: context,
+                                initialDate: DateTime.now(),
+                                firstDate: DateTime(2000),
+                                lastDate: DateTime(2100),
+                              );
+                              if (picked != null) {
+                                setState(() {
+                                  _fechaDevolucion = picked;
+                                });
+                              }
+                            },
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
-              TextFormField(
-                controller: _prestatarioController,
-                decoration: const InputDecoration(labelText: 'PRESTATARIO:'),
-              ),
+
+              const SizedBox(height: 16),
+
+              // Botones de acción
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  ElevatedButton(
+                  ElevatedButton.icon(
+                    icon: const Icon(Icons.save),
+                    label: const Text('Guardar'),
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
                         final prestamo = PrestamoProducto(
@@ -169,19 +209,22 @@ class _RegistroPrestamosProductosState extends State<RegistroPrestamosProductos>
                           descripcion: _descripcionController.text,
                           fechaPrestamo: _fechaPrestamo ?? DateTime.now(),
                           fechaDevolucion: _fechaDevolucion,
-                          medida: _medidaController.text,
+                          medida: _medidaSeleccionada ?? '',
                           cantidad: int.tryParse(_cantidadController.text) ?? 0,
                           prestatario: _prestatarioController.text,
                         );
+
                         Provider.of<PrestamoProviderAlmacen>(context, listen: false)
                             .agregarPrestamo(prestamo);
+
+                        _limpiarCampos();
                       }
                     },
-                    child: const Text('GUARDAR'),
                   ),
-                  ElevatedButton(
-                    onPressed: _limpiarCasillas,
-                    child: const Text('LIMPIAR '),
+                  ElevatedButton.icon(
+                    icon: const Icon(Icons.clear),
+                    label: const Text('Limpiar'),
+                    onPressed: _limpiarCampos,
                   ),
                 ],
               ),
@@ -189,6 +232,22 @@ class _RegistroPrestamosProductosState extends State<RegistroPrestamosProductos>
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildTextField(TextEditingController controller, String label) {
+    return TextFormField(
+      controller: controller,
+      decoration: InputDecoration(labelText: label),
+    );
+  }
+
+  Widget _buildNumericField(TextEditingController controller, String label) {
+    return TextFormField(
+      controller: controller,
+      decoration: InputDecoration(labelText: label),
+      keyboardType: TextInputType.number,
+      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
     );
   }
 }

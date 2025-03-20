@@ -1,65 +1,70 @@
 import 'package:flutter/material.dart';
-import 'package:myapp/RRHH/Asistencia/Asistencia.dart';
 import 'package:myapp/RRHH/Asistencia/MenuNavegacionAsistencia.dart';
 import 'package:myapp/RRHH/Oficina/MenuNavegacionOficina.dart';
-import 'package:myapp/RRHH/Oficina/Oficina.dart';
 import 'package:myapp/RRHH/Pagos/MenuNavegacionConplanilla.dart';
 import 'package:myapp/RRHH/Pagos/MenuNavegacionSinplanilla.dart';
-import 'package:myapp/RRHH/Pagos/PagosSinPlanilla.dart';
 import 'package:myapp/RRHH/PartePagos/MenuNavegacionPagos.dart';
-import 'package:myapp/RRHH/PartePagos/PartPagos.dart'; // Importación actualizada
 
-class Arearecursoshumanos extends StatelessWidget {
-  const Arearecursoshumanos({super.key});
+class AreaRecursosHumanos extends StatelessWidget {
+  const AreaRecursosHumanos({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Gestion Recursos Humanos'),
+        title: const Text('Gestión de Recursos Humanos'),
+        centerTitle: true,
+        elevation: 4,
       ),
-      body: SingleChildScrollView(
+      body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              _buildButton(context, 'Asistencia', const Menunavegacionasistencia()),
-              const SizedBox(height: 16),
-              _buildButton(context, 'Oficina', const Menunavegacionoficina()),
-              const SizedBox(height: 16),
-              _buildButton(context, 'Pagos en Planilla', const MenuNavegacionConPlanilla()),
-              const SizedBox(height: 16),
-              _buildButton(context, 'Pagos Sin Planilla', const MenuNavegacionSinPlanilla()),
-              const SizedBox(height: 16),
-              _buildButton(context, 'Parte de Pagos', const Menunavegacionpagos()),
-            ],
-          ),
+        child: GridView.count(
+          crossAxisCount: 2, // Dos columnas para mejor distribución
+          crossAxisSpacing: 16,
+          mainAxisSpacing: 16,
+          childAspectRatio: 1.3,
+          children: [
+            _buildCard(context, 'Asistencia', Icons.check_circle, const Menunavegacionasistencia()),
+            _buildCard(context, 'Oficina', Icons.business, const Menunavegacionoficina()),
+            _buildCard(context, 'Pagos en Planilla', Icons.attach_money, const MenuNavegacionConPlanilla()),
+            _buildCard(context, 'Pagos Sin Planilla', Icons.money_off, const MenuNavegacionSinPlanilla()),
+            _buildCard(context, 'Parte de Pagos', Icons.payment, const Menunavegacionpagos()),
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildButton(BuildContext context, String text, Widget destination) {
-    return SizedBox(
-      width: 250,
-      child: ElevatedButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => destination),
-          );
-        },
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.blue,
-          foregroundColor: Colors.white,
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-          textStyle: const TextStyle(fontSize: 18),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8.0),
+  Widget _buildCard(BuildContext context, String text, IconData icon, Widget destination) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(context, MaterialPageRoute(builder: (context) => destination));
+      },
+      child: Card(
+        elevation: 6,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            gradient: LinearGradient(
+              colors: [Colors.blueAccent, Colors.lightBlue], // Fondo degradado
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon, size: 40, color: Colors.white),
+              const SizedBox(height: 8),
+              Text(
+                text,
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+              ),
+            ],
           ),
         ),
-        child: Text(text),
       ),
     );
   }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/InventarioVehiculos/AccesoriosVehiculares5.dart';
+import 'package:myapp/InventarioVehiculos/AccesoriosVehiculares6.dart';
 
 class AccesoriosVehicularesContinuacion5Screen extends StatefulWidget {
   const AccesoriosVehicularesContinuacion5Screen({super.key});
@@ -11,90 +12,157 @@ class AccesoriosVehicularesContinuacion5Screen extends StatefulWidget {
 
 class _AccesoriosVehicularesContinuacion5ScreenState
     extends State<AccesoriosVehicularesContinuacion5Screen> {
-  // ... (Aquí irán las variables de estado y la lógica) ...
+  final List<String> accesorios = [
+    'Libreta de Control',
+    'Tapitas de Ruedas',
+    'Tuercas de Rueda',
+    'Batería Posterior',
+    'Tarjeta de Propiedad',
+    'Faro Delantero (LH-IZQ)',
+    'Faro Delantero (RH-DER)',
+    'Seguros de Faro Delantero',
+    'Faros Neblineros',
+    'Parabrisas Delantero',
+    'Parachoque Delantero',
+    'Capot',
+    'Soporte/ Amortiguador Capot',
+    'Guardafango Delantero LH',
+  ];
+
+  final Map<String, bool> accesoriosDisponibles = {};
+  final Map<String, String> accesoriosEstado = {};
+
+  @override
+  void initState() {
+    super.initState();
+    for (var accesorio in accesorios) {
+      accesoriosDisponibles[accesorio] = false;
+      accesoriosEstado[accesorio] = 'Seleccione';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('ACCESORIOS VEHICULARES')),
+      appBar: AppBar(
+        title: const Text('Accesorios Vehiculares'),
+        centerTitle: true,
+        elevation: 4,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(
-                'ACCESORIOS VEHICULARES:',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        child: Column(
+          children: [
+            const Text(
+              'Seleccione los accesorios disponibles y su estado:',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 10),
+            Expanded(
+              child: ListView.builder(
+                itemCount: accesorios.length,
+                itemBuilder: (context, index) {
+                  final accesorio = accesorios[index];
+                  return _buildAccesorioCard(accesorio);
+                },
               ),
-              SizedBox(height: 20),
-              _buildAccesorioRow(context, '-LIBRETA DE CONTROL:'),
-              _buildAccesorioRow(context, '-TAPITAS DE RUEDAS:'),
-              _buildAccesorioRow(context, '-TUERCAS DE RUEDA:'),
-              _buildAccesorioRow(context, '-BATERIA POSTERIOR:'),
-              _buildAccesorioRow(context, '-TARJETA DE PROPIEDAD:'),
-              _buildAccesorioRow(context, '-FARO DELANTERO (LH-IZQ)'),
-              _buildAccesorioRow(context, '-FARO DELANTERO (RH-DER)'),
-              _buildAccesorioRow(context, '-SEGUROS DE FARO DELANTERO:'),
-              _buildAccesorioRow(context, '-FAROS NEBLINEROS:'),
-              _buildAccesorioRow(context, '-PARABRISAS DELANTERO:'),
-              _buildAccesorioRow(context, '-PARACHOQUE DELANTERO:'),
-              _buildAccesorioRow(context, '-CAPOT:'),
-              _buildAccesorioRow(context, '-SOPORTE/ AMORTIGUADOR CAPOT:'),
-              _buildAccesorioRow(context, '-GUARDAFANGO DELANTERO LH:'),
-              SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.pop(context); // Volver a la pantalla anterior
-                    },
-                    child: Text('ATRAS'),
+            ),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                ElevatedButton.icon(
+                  onPressed: () => Navigator.pop(context),
+                  icon: const Icon(Icons.arrow_back),
+                  label: const Text('Atrás'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.grey[600],
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 12),
+                    textStyle: const TextStyle(fontSize: 16),
                   ),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder:
-                              (context) =>
-                                  AccesoriosVehicularesContinuacion6Screen(),
-                        ),
-                      );
-                    },
-                    child: Text('SIGUIENTE'),
+                ),
+                ElevatedButton.icon(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            const AccesoriosVehicularesContinuacion6Screen(),
+                      ),
+                    );
+                  },
+                  icon: const Icon(Icons.arrow_forward),
+                  label: const Text('Siguiente'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blueAccent,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 12),
+                    textStyle: const TextStyle(fontSize: 16),
                   ),
-                ],
-              ),
-            ],
-          ),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildAccesorioRow(BuildContext context, String nombreAccesorio) {
-    return Row(
-      children: <Widget>[
-        Text(nombreAccesorio),
-        Checkbox(value: false, onChanged: (bool? value) {}),
-        Text('SI'),
-        Checkbox(value: true, onChanged: (bool? value) {}),
-        SizedBox(width: 20),
-        DropdownButton<String>(
-          items:
-              <String>['Seleccione', 'Bueno', 'Roto', 'No Funciona'].map((
-                String value,
-              ) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
-              }).toList(),
-          onChanged: (_) {},
-          value: 'Seleccione',
+  Widget _buildAccesorioCard(String accesorio) {
+    return Card(
+      elevation: 4,
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ListTile(
+              leading: Icon(
+                Icons.settings_applications,
+                color: accesoriosDisponibles[accesorio]! ? Colors.green : Colors.red,
+              ),
+              title: Text(
+                accesorio,
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              trailing: Switch(
+                value: accesoriosDisponibles[accesorio]!,
+                onChanged: (value) {
+                  setState(() {
+                    accesoriosDisponibles[accesorio] = value;
+                  });
+                },
+              ),
+            ),
+            if (accesoriosDisponibles[accesorio]!)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: DropdownButtonFormField<String>(
+                  decoration: const InputDecoration(labelText: 'Estado'),
+                  value: accesoriosEstado[accesorio],
+                  items: ['Seleccione', 'Bueno', 'Roto', 'No Funciona']
+                      .map((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      accesoriosEstado[accesorio] = value!;
+                    });
+                  },
+                ),
+              ),
+          ],
         ),
-      ],
+      ),
     );
   }
 }

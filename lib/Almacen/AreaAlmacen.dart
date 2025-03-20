@@ -1,7 +1,4 @@
-// Suggested code may be subject to a license. Learn more: ~LicenseLog:3281009209.
-// Suggested code may be subject to a license. Learn more: ~LicenseLog:1738169589.
-// Suggested code may be subject to a license. Learn more: ~LicenseLog:1473374183.
-// Suggested code may be subject to a license. Learn more: ~LicenseLog:3141381910.
+import 'package:flutter/material.dart';
 import 'package:myapp/Administracion/Kardex/MenuNavegationKardex.dart';
 import 'package:myapp/Administracion/Productos/MenuNavegacionProductos.dart';
 import 'package:myapp/Almacen/Cotizacion/MenuNavegacionCotizacion.dart';
@@ -10,65 +7,70 @@ import 'package:myapp/Almacen/EntradaSalida/MenuNavegacionAlmacenSalida.dart';
 import 'package:myapp/Almacen/Liquidacion%20/MenuNavegacionLiquidacion.dart';
 import 'package:myapp/Almacen/Prestamos/MenuNavegacion.dart';
 import 'package:myapp/Almacen/Proveedores/MenuNavegacionProveedores.dart';
-import 'package:flutter/material.dart';
 
-class Areaalmacen extends StatelessWidget {
-  const Areaalmacen({super.key});
+class AreaAlmacen extends StatelessWidget {
+  const AreaAlmacen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Gestion Almacen'),
+        title: const Text('Gestión de Almacén'),
+        centerTitle: true,
+        elevation: 4,
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0), // Padding general
-        child: Center( // Centrar el contenido
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center, // Centrar verticalmente
-            children: [
-              _buildButton(context, 'Productos', const MenuNavegacionProductos()),
-              const SizedBox(height: 16),
-              _buildButton(context, 'Prestamos', const MenunavegacionPrestamos()),
-              const SizedBox(height: 16),
-              _buildButton(context, 'Cotizacion', const Menunavegacioncotizacion()),
-              const SizedBox(height: 16),
-              _buildButton(context, 'Liquidacion', const Menunavegacionliquidacion()),
-              const SizedBox(height: 16),
-              _buildButton(context, 'Proveedores', const MenunavegacionProveedores()),
-              const SizedBox(height: 16),
-              _buildButton(context, 'Entrada', const MenunavegacionEntrada()),
-              const SizedBox(height: 16),
-              _buildButton(context, 'Salida', const MenunavegacionSalida()),
-              const SizedBox(height: 16),
-              _buildButton(context, 'Kardex', const MenuNavegacionKardex()),
-            ],
-          ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: GridView.count(
+          crossAxisCount: 2, // Dos columnas para mejor distribución
+          crossAxisSpacing: 16,
+          mainAxisSpacing: 16,
+          childAspectRatio: 1.3,
+          children: [
+            _buildCard(context, 'Productos', Icons.inventory, const MenuNavegacionProductos()),
+            _buildCard(context, 'Préstamos', Icons.swap_horiz, const MenunavegacionPrestamos()),
+            _buildCard(context, 'Cotización', Icons.request_quote, const Menunavegacioncotizacion()),
+            _buildCard(context, 'Liquidación', Icons.receipt_long, const Menunavegacionliquidacion()),
+            _buildCard(context, 'Proveedores', Icons.store, const MenunavegacionProveedores()),
+            _buildCard(context, 'Entrada', Icons.input, const MenunavegacionEntrada()),
+            _buildCard(context, 'Salida', Icons.output, const MenunavegacionSalida()),
+            _buildCard(context, 'Kardex', Icons.assignment, const MenuNavegacionKardex()),
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildButton(BuildContext context, String text, Widget destination) {
-    return SizedBox(
-      width: 250, // Ancho fijo para todos los botones (ajusta según necesites)
-      child: ElevatedButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => destination),
-          );
-        },
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.blue,
-          foregroundColor: Colors.white,
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-          textStyle: const TextStyle(fontSize: 18),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8.0), // Bordes redondeados
+  Widget _buildCard(BuildContext context, String text, IconData icon, Widget destination) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(context, MaterialPageRoute(builder: (context) => destination));
+      },
+      child: Card(
+        elevation: 6,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            gradient: LinearGradient(
+              colors: [Colors.deepPurpleAccent, Colors.blueAccent], // Fondo degradado
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon, size: 40, color: Colors.white),
+              const SizedBox(height: 8),
+              Text(
+                text,
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+              ),
+            ],
           ),
         ),
-        child: Text(text),
       ),
     );
   }

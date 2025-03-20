@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/InventarioVehiculos/AccesoriosVehiculares1.dart';
 
-// ... (InventarioVehicularScreen y _InventarioVehicularScreenState) ...
-
 class AccesoriosVehicularesScreen extends StatefulWidget {
   const AccesoriosVehicularesScreen({super.key});
 
@@ -13,95 +11,157 @@ class AccesoriosVehicularesScreen extends StatefulWidget {
 
 class _AccesoriosVehicularesScreenState
     extends State<AccesoriosVehicularesScreen> {
-  // Variables de estado para los accesorios
-  bool llaveContactoSi = false;
-  String llaveContactoEstado = 'Seleccione';
-  // ... (variables para otros accesorios) ...
+  final List<String> accesorios = [
+    'Llave de Contacto',
+    'Radio MP3 Fábrica',
+    'Control de Huellas',
+    'Panel de Comando',
+    'Cámara de Video',
+    'Cenicero',
+    'Lap Top con Rack',
+    'Luces de Salón',
+    'Agarraderas Interior',
+    'Asientos Vehicular',
+    'Cabezal',
+    'Cinturón de Seguridad',
+    'A/C y Calefacción',
+    'Espejo Interior',
+  ];
+
+  final Map<String, bool> accesoriosDisponibles = {};
+  final Map<String, String> accesoriosEstado = {};
+
+  @override
+  void initState() {
+    super.initState();
+    for (var accesorio in accesorios) {
+      accesoriosDisponibles[accesorio] = false;
+      accesoriosEstado[accesorio] = 'Seleccione';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('ACCESORIOS VEHICULARES')),
+      appBar: AppBar(
+        title: const Text('Accesorios Vehiculares'),
+        centerTitle: true,
+        elevation: 4,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(
-                'ACCESORIOS VEHICULARES:',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        child: Column(
+          children: [
+            const Text(
+              'Seleccione los accesorios disponibles y su estado:',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 10),
+            Expanded(
+              child: ListView.builder(
+                itemCount: accesorios.length,
+                itemBuilder: (context, index) {
+                  final accesorio = accesorios[index];
+                  return _buildAccesorioCard(accesorio);
+                },
               ),
-              SizedBox(height: 20),
-              _buildAccesorioRow(context, '-LLAVE DE CONTACTO:'),
-              _buildAccesorioRow(context, '-RADIO MP3 FABRICA:'),
-              _buildAccesorioRow(context, '-CONTROL DE HUELLAS:'),
-              _buildAccesorioRow(context, '-PANEL DE COMANDO:'),
-              _buildAccesorioRow(context, '-CAMARA DE VIDEOS:'),
-              _buildAccesorioRow(context, '-CENICERO:'),
-              _buildAccesorioRow(context, '-LAP TOP CON RACK:'),
-              _buildAccesorioRow(context, '-LUCES DE SALON:'),
-              _buildAccesorioRow(context, '-AGARRADERAS INTERIOR:'),
-              _buildAccesorioRow(context, '-ASIENTOS VEHICULAR:'),
-              _buildAccesorioRow(context, '-CABEZALES:'),
-              _buildAccesorioRow(context, '-CINTURON DE SEGURIDAD:'),
-              _buildAccesorioRow(context, '-A/C Y CALEFACCION:'),
-              _buildAccesorioRow(context, '-ESPEJO INTERIOR:'),
-              SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: Text('ATRAS'),
+            ),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                ElevatedButton.icon(
+                  onPressed: () => Navigator.pop(context),
+                  icon: const Icon(Icons.arrow_back),
+                  label: const Text('Atrás'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.grey[600],
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 12),
+                    textStyle: const TextStyle(fontSize: 16),
                   ),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder:
-                              (context) =>
-                                  AccesoriosVehicularesContinuacion2Screen(),
-                        ),
-                      );
-                    },
-                    child: Text('SIGUIENTE'),
+                ),
+                ElevatedButton.icon(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            AccesoriosVehicularesContinuacion2Screen(),
+                      ),
+                    );
+                  },
+                  icon: const Icon(Icons.arrow_forward),
+                  label: const Text('Siguiente'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blueAccent,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 12),
+                    textStyle: const TextStyle(fontSize: 16),
                   ),
-                ],
-              ),
-            ],
-          ),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildAccesorioRow(BuildContext context, String nombreAccesorio) {
-    return Row(
-      children: <Widget>[
-        Text(nombreAccesorio),
-        Checkbox(value: false, onChanged: (bool? value) {}),
-        Text('SI'),
-        Checkbox(value: true, onChanged: (bool? value) {}),
-        Text('NO'),
-        SizedBox(width: 20),
-        DropdownButton<String>(
-          items:
-              <String>['Seleccione', 'Bueno', 'Roto', 'No Funciona'].map((
-                String value,
-              ) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
-              }).toList(),
-          onChanged: (_) {},
-          value: 'Seleccione',
+  Widget _buildAccesorioCard(String accesorio) {
+    return Card(
+      elevation: 4,
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ListTile(
+              leading: Icon(
+                Icons.build,
+                color: accesoriosDisponibles[accesorio]! ? Colors.green : Colors.red,
+              ),
+              title: Text(
+                accesorio,
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              trailing: Switch(
+                value: accesoriosDisponibles[accesorio]!,
+                onChanged: (value) {
+                  setState(() {
+                    accesoriosDisponibles[accesorio] = value;
+                  });
+                },
+              ),
+            ),
+            if (accesoriosDisponibles[accesorio]!)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: DropdownButtonFormField<String>(
+                  decoration: const InputDecoration(labelText: 'Estado'),
+                  value: accesoriosEstado[accesorio],
+                  items: ['Seleccione', 'Bueno', 'Roto', 'No Funciona']
+                      .map((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      accesoriosEstado[accesorio] = value!;
+                    });
+                  },
+                ),
+              ),
+          ],
         ),
-      ],
+      ),
     );
   }
 }

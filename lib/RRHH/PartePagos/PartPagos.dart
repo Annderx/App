@@ -1,144 +1,201 @@
 import 'package:flutter/material.dart';
 
-class RegistroPartePagoTrabajadores extends StatefulWidget { // Clase principal del widget
+class RegistroPartePagoTrabajadores extends StatefulWidget {
   const RegistroPartePagoTrabajadores({super.key});
 
   @override
-  _RegistroPartePagoTrabajadoresState createState() =>
-      _RegistroPartePagoTrabajadoresState();
+  _RegistroPartePagoTrabajadoresState createState() => _RegistroPartePagoTrabajadoresState();
 }
 
-class _RegistroPartePagoTrabajadoresState
-    extends State<RegistroPartePagoTrabajadores> {
+class _RegistroPartePagoTrabajadoresState extends State<RegistroPartePagoTrabajadores> {
   final _formKey = GlobalKey<FormState>();
-
-  // Controladores para los campos de texto
   final _colaboradorController = TextEditingController();
-  final _montoAcuenta1Controller = TextEditingController();
-  final _fechaPagoAcuenta1Controller = TextEditingController();
-  final _formaPagoAcuenta1Controller = TextEditingController();
-  final _observacionAcuenta1Controller = TextEditingController();
-  final _montoAcuenta2Controller = TextEditingController();
-  final _fechaPagoAcuenta2Controller = TextEditingController();
-  final _formaPagoAcuenta2Controller = TextEditingController();
-  final _observacionAcuenta2Controller = TextEditingController();
-  final _montoAcuenta3Controller = TextEditingController();
-  final _fechaPagoAcuenta3Controller = TextEditingController();
-  final _formaPagoAcuenta3Controller = TextEditingController();
-  final _observacionAcuenta3Controller = TextEditingController();
-  final _montoAcuenta4Controller = TextEditingController();
-  final _fechaPagoAcuenta4Controller = TextEditingController();
-  final _formaPagoAcuenta4Controller = TextEditingController();
-  final _observacionAcuenta4Controller = TextEditingController();
-  final _montoAcuenta5Controller = TextEditingController();
-  final _fechaPagoAcuenta5Controller = TextEditingController();
-  final _formaPagoAcuenta5Controller = TextEditingController();
-  final _observacionAcuenta5Controller = TextEditingController();
-  final _montoAcuenta6Controller = TextEditingController();
-  final _fechaPagoAcuenta6Controller = TextEditingController();
-  final _formaPagoAcuenta6Controller = TextEditingController();
-  final _observacionAcuenta6Controller = TextEditingController();
-  final _montoAcuenta7Controller = TextEditingController();
-  final _fechaPagoAcuenta7Controller = TextEditingController();
-  final _formaPagoAcuenta7Controller = TextEditingController();
-  final _observacionAcuenta7Controller = TextEditingController();
-  final _montoAcuenta8Controller = TextEditingController();
-  final _fechaPagoAcuenta8Controller = TextEditingController();
-  final _formaPagoAcuenta8Controller = TextEditingController();
-  final _observacionAcuenta8Controller = TextEditingController();
-  final _montoAcuenta9Controller = TextEditingController();
-  final _fechaPagoAcuenta9Controller = TextEditingController();
-  final _formaPagoAcuenta9Controller = TextEditingController();
-  final _observacionAcuenta9Controller = TextEditingController();
-  final _montoAcuenta10Controller = TextEditingController();
-  final _fechaPagoAcuenta10Controller = TextEditingController();
-  final _formaPagoAcuenta10Controller = TextEditingController();
-  final _observacionAcuenta10Controller = TextEditingController();
   final _saldoPagarController = TextEditingController();
 
   DateTime? _fecha;
+  List<Map<String, dynamic>> pagos = [];
 
-  @override
-  void initState() {
-    super.initState();
-    _cargarDatos(); // Llama a la función para cargar los datos iniciales
+  void _agregarPago() {
+    setState(() {
+      pagos.add({
+        'monto': TextEditingController(),
+        'fecha': null,
+        'formaPago': TextEditingController(),
+        'observacion': TextEditingController(),
+      });
+    });
   }
 
-  Future<void> _cargarDatos() async {
-    // Aquí puedes cargar los datos desde una base de datos o API
-    // Por ejemplo:
-    // _proveedores = await obtenerProveedores();
-
-    // Luego, actualiza el estado para que los DropdownButton se actualicen
-    setState(() {});
+  void _eliminarPago(int index) {
+    setState(() {
+      pagos.removeAt(index);
+    });
   }
 
   void _limpiarCasillas() {
     _colaboradorController.clear();
-    _montoAcuenta1Controller.clear();
-    _fechaPagoAcuenta1Controller.clear();
-    _formaPagoAcuenta1Controller.clear();
-    _observacionAcuenta1Controller.clear();
-    _montoAcuenta2Controller.clear();
-    _fechaPagoAcuenta2Controller.clear();
-    _formaPagoAcuenta2Controller.clear();
-    _observacionAcuenta2Controller.clear();
-    _montoAcuenta3Controller.clear();
-    _fechaPagoAcuenta3Controller.clear();
-    _formaPagoAcuenta3Controller.clear();
-    _observacionAcuenta3Controller.clear();
-    _montoAcuenta4Controller.clear();
-    _fechaPagoAcuenta4Controller.clear();
-    _formaPagoAcuenta4Controller.clear();
-    _observacionAcuenta4Controller.clear();
-    _montoAcuenta5Controller.clear();
-    _fechaPagoAcuenta5Controller.clear();
-    _formaPagoAcuenta5Controller.clear();
-    _observacionAcuenta5Controller.clear();
-    _montoAcuenta6Controller.clear();
-    _fechaPagoAcuenta6Controller.clear();
-    _formaPagoAcuenta6Controller.clear();
-    _observacionAcuenta6Controller.clear();
-    _montoAcuenta7Controller.clear();
-    _fechaPagoAcuenta7Controller.clear();
-    _formaPagoAcuenta7Controller.clear();
-    _observacionAcuenta7Controller.clear();
-    _montoAcuenta8Controller.clear();
-    _fechaPagoAcuenta8Controller.clear();
-    _formaPagoAcuenta8Controller.clear();
-    _observacionAcuenta8Controller.clear();
-    _montoAcuenta9Controller.clear();
-    _fechaPagoAcuenta9Controller.clear();
-    _formaPagoAcuenta9Controller.clear();
-    _observacionAcuenta9Controller.clear();
-    _montoAcuenta10Controller.clear();
-    _fechaPagoAcuenta10Controller.clear();
-    _formaPagoAcuenta10Controller.clear();
-    _observacionAcuenta10Controller.clear();
     _saldoPagarController.clear();
+    pagos.clear();
     _fecha = null;
-
-    setState(() {}); // Actualiza el estado para limpiar la fecha
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Registro de Parte de Pago de Trabajadores'),
+        title: const Text('Registro de Parte de Pago'),
+        centerTitle: true,
+        elevation: 4,
       ),
-      body: SingleChildScrollView(
+      body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // ... (resto del código)
-            ],
+        child: SingleChildScrollView(
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                _buildFechaSelector(),
+                _buildTextField(_colaboradorController, 'Colaborador', Icons.person),
+                _buildTextField(_saldoPagarController, 'Saldo a Pagar', Icons.attach_money, isNumeric: true),
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text("Pagos Parciales", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                    ElevatedButton.icon(
+                      onPressed: _agregarPago,
+                      icon: const Icon(Icons.add),
+                      label: const Text("Añadir Pago"),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                _buildPagosList(),
+              ],
+            ),
           ),
         ),
       ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          if (_formKey.currentState!.validate()) {
+            _limpiarCasillas();
+          }
+        },
+        label: const Text('Guardar'),
+        icon: const Icon(Icons.save),
+        backgroundColor: Colors.green,
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+    );
+  }
+
+  Widget _buildFechaSelector() {
+    return Card(
+      elevation: 3,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      child: ListTile(
+        title: Text(
+          _fecha != null ? 'Fecha: ${_fecha!.toString().split(' ')[0]}' : 'Seleccionar Fecha',
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
+        leading: const Icon(Icons.date_range, color: Colors.blue),
+        trailing: IconButton(
+          icon: const Icon(Icons.calendar_today, color: Colors.blue),
+          onPressed: () async {
+            final DateTime? picked = await showDatePicker(
+              context: context,
+              initialDate: DateTime.now(),
+              firstDate: DateTime(1900),
+              lastDate: DateTime.now(),
+            );
+            if (picked != null && picked != _fecha) {
+              setState(() {
+                _fecha = picked;
+              });
+            }
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTextField(TextEditingController controller, String label, IconData icon, {bool isNumeric = false}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6),
+      child: TextFormField(
+        controller: controller,
+        keyboardType: isNumeric ? TextInputType.number : TextInputType.text,
+        decoration: InputDecoration(
+          labelText: label,
+          prefixIcon: Icon(icon),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+        ),
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return 'Campo requerido';
+          }
+          return null;
+        },
+      ),
+    );
+  }
+
+  Widget _buildPagosList() {
+    return Column(
+      children: pagos.asMap().entries.map((entry) {
+        int index = entry.key;
+        Map<String, dynamic> pago = entry.value;
+        return Card(
+          margin: const EdgeInsets.symmetric(vertical: 6),
+          elevation: 4,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          child: Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: _buildTextField(pago['monto'], 'Monto', Icons.attach_money, isNumeric: true),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.delete, color: Colors.red),
+                      onPressed: () => _eliminarPago(index),
+                    ),
+                  ],
+                ),
+                ListTile(
+                  leading: const Icon(Icons.date_range, color: Colors.blue),
+                  title: Text(
+                    pago['fecha'] != null ? 'Fecha: ${pago['fecha'].toString().split(' ')[0]}' : 'Seleccionar Fecha de Pago',
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  trailing: IconButton(
+                    icon: const Icon(Icons.calendar_today, color: Colors.blue),
+                    onPressed: () async {
+                      final DateTime? picked = await showDatePicker(
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime(1900),
+                        lastDate: DateTime.now(),
+                      );
+                      if (picked != null) {
+                        setState(() {
+                          pago['fecha'] = picked;
+                        });
+                      }
+                    },
+                  ),
+                ),
+                _buildTextField(pago['formaPago'], 'Forma de Pago', Icons.payment),
+                _buildTextField(pago['observacion'], 'Observaciones', Icons.note),
+              ],
+            ),
+          ),
+        );
+      }).toList(),
     );
   }
 }

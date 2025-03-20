@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'ClasesProveedores.dart';
 import 'proveedores_provider.dart';
+// Para formatear entradas numéricas
 
 class RegistroProveedores extends StatefulWidget {
   const RegistroProveedores({super.key});
@@ -13,16 +14,17 @@ class RegistroProveedores extends StatefulWidget {
 class _RegistroProveedoresState extends State<RegistroProveedores> {
   final _formKey = GlobalKey<FormState>();
 
+  // Controladores
   final _codigoProveedorController = TextEditingController();
   final _razonSocialController = TextEditingController();
   final _noIdentificacionController = TextEditingController();
   final _direccionController = TextEditingController();
-  final _metodoPagoController = TextEditingController();
-  final _categoriaController = TextEditingController();
   final _telefonoController = TextEditingController();
   final _creditoController = TextEditingController();
   final _correoController = TextEditingController();
   final _notasController = TextEditingController();
+
+  // Controladores para contactos
   final _contacto1NombreController = TextEditingController();
   final _contacto1CorreoController = TextEditingController();
   final _contacto1CelularController = TextEditingController();
@@ -30,23 +32,36 @@ class _RegistroProveedoresState extends State<RegistroProveedores> {
   final _contacto2CorreoController = TextEditingController();
   final _contacto2CelularController = TextEditingController();
 
+  // Variables para dropdown
+  String? _metodoPagoSeleccionado;
+  String? _categoriaSeleccionada;
+  int _cantidadContactos = 1;
+
   @override
-  void initState() {
-    super.initState();
-    _cargarDatos();
+  void dispose() {
+    // Liberar memoria de controladores
+    _codigoProveedorController.dispose();
+    _razonSocialController.dispose();
+    _noIdentificacionController.dispose();
+    _direccionController.dispose();
+    _telefonoController.dispose();
+    _creditoController.dispose();
+    _correoController.dispose();
+    _notasController.dispose();
+    _contacto1NombreController.dispose();
+    _contacto1CorreoController.dispose();
+    _contacto1CelularController.dispose();
+    _contacto2NombreController.dispose();
+    _contacto2CorreoController.dispose();
+    _contacto2CelularController.dispose();
+    super.dispose();
   }
 
-  Future<void> _cargarDatos() async {
-    setState(() {});
-  }
-
-  void _limpiarCasillas() {
+  void _limpiarCampos() {
     _codigoProveedorController.clear();
     _razonSocialController.clear();
     _noIdentificacionController.clear();
     _direccionController.clear();
-    _metodoPagoController.clear();
-    _categoriaController.clear();
     _telefonoController.clear();
     _creditoController.clear();
     _correoController.clear();
@@ -57,6 +72,9 @@ class _RegistroProveedoresState extends State<RegistroProveedores> {
     _contacto2NombreController.clear();
     _contacto2CorreoController.clear();
     _contacto2CelularController.clear();
+    _metodoPagoSeleccionado = null;
+    _categoriaSeleccionada = null;
+    _cantidadContactos = 1;
     setState(() {});
   }
 
@@ -65,141 +83,153 @@ class _RegistroProveedoresState extends State<RegistroProveedores> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Registro de Proveedores'),
+        centerTitle: true,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
+              // Código de Proveedor y Razón Social
+              Card(
+                elevation: 4,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Column(
+                    children: [
+                      TextFormField(
+                        controller: _codigoProveedorController,
+                        decoration: const InputDecoration(labelText: 'Código Proveedor'),
+                        enabled: false,
+                      ),
+                      TextFormField(
+                        controller: _razonSocialController,
+                        decoration: const InputDecoration(labelText: 'Razón Social'),
+                        validator: (value) => value!.isEmpty ? 'Este campo es obligatorio' : null,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 16),
+
+              // Información General
+              ExpansionTile(
+                title: const Text('Información General'),
                 children: [
-                  Expanded(
-                    child: TextFormField(
-                      controller: _codigoProveedorController,
-                      decoration: const InputDecoration(labelText: 'CODIGO PROVEEDOR:'),
-                      enabled: false,
-                    ),
+                  _buildTextField(_noIdentificacionController, 'Número de Identificación'),
+                  _buildTextField(_direccionController, 'Dirección'),
+                  _buildTextField(_telefonoController, 'Teléfono'),
+                  Row(
+                    children: [
+                      Expanded(child: _buildNumericField(_creditoController, 'Crédito Disponible')),
+                      Expanded(child: _buildEmailField(_correoController, 'Correo Electrónico')),
+                    ],
                   ),
-                  Expanded(
-                    child: TextFormField(
-                      controller: _razonSocialController,
-                      decoration: const InputDecoration(labelText: 'RAZON SOCIAL:'),
-                    ),
+                  _buildTextField(_notasController, 'Notas Adicionales'),
+                ],
+              ),
+
+              const SizedBox(height: 16),
+
+              // Método de Pago y Categoría
+              Card(
+                elevation: 4,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Column(
+                    children: [
+                      DropdownButtonFormField<String>(
+                        value: _metodoPagoSeleccionado,
+                        decoration: const InputDecoration(labelText: 'Método de Pago'),
+                        items: ['Transferencia', 'Efectivo', 'Tarjeta']
+                            .map((metodo) => DropdownMenuItem(value: metodo, child: Text(metodo)))
+                            .toList(),
+                        onChanged: (value) => setState(() => _metodoPagoSeleccionado = value),
+                      ),
+                      DropdownButtonFormField<String>(
+                        value: _categoriaSeleccionada,
+                        decoration: const InputDecoration(labelText: 'Categoría'),
+                        items: ['Electrónica', 'Construcción', 'Papelería']
+                            .map((categoria) => DropdownMenuItem(value: categoria, child: Text(categoria)))
+                            .toList(),
+                        onChanged: (value) => setState(() => _categoriaSeleccionada = value),
+                      ),
+                    ],
                   ),
-                  const Expanded(
-                    child: Text('Nº CONTACTOS:'),
+                ),
+              ),
+
+              const SizedBox(height: 16),
+
+              // Selección de Contactos
+              Text(
+                'Cantidad de Contactos:',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ChoiceChip(
+                    label: const Text('1 Contacto'),
+                    selected: _cantidadContactos == 1,
+                    onSelected: (selected) => setState(() => _cantidadContactos = 1),
+                  ),
+                  const SizedBox(width: 10),
+                  ChoiceChip(
+                    label: const Text('2 Contactos'),
+                    selected: _cantidadContactos == 2,
+                    onSelected: (selected) => setState(() => _cantidadContactos = 2),
                   ),
                 ],
               ),
-              Row(
+
+              const SizedBox(height: 16),
+
+              // Contacto 1
+              ExpansionTile(
+                title: const Text('Contacto 1'),
                 children: [
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () {},
-                      child: const Text('1 CONTACTO'),
-                    ),
-                  ),
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () {},
-                      child: const Text('2 CONTACTO'),
-                    ),
-                  ),
+                  _buildTextField(_contacto1NombreController, 'Nombre'),
+                  _buildEmailField(_contacto1CorreoController, 'Correo'),
+                  _buildTextField(_contacto1CelularController, 'Celular'),
                 ],
               ),
-              TextFormField(
-                controller: _noIdentificacionController,
-                decoration: const InputDecoration(labelText: 'NO IDENTIFICACION:'),
-              ),
-              TextFormField(
-                controller: _direccionController,
-                decoration: const InputDecoration(labelText: 'DIRECCION:'),
-              ),
-              TextFormField(
-                controller: _metodoPagoController,
-                decoration: const InputDecoration(labelText: 'METODO DE PAGO:'),
-              ),
-              TextFormField(
-                controller: _categoriaController,
-                decoration: const InputDecoration(labelText: 'CATEGORIA:'),
-              ),
-              TextFormField(
-                controller: _telefonoController,
-                decoration: const InputDecoration(labelText: 'TELEFONO:'),
-              ),
-              TextFormField(
-                controller: _creditoController,
-                decoration: const InputDecoration(labelText: 'CREDITO:'),
-              ),
-              TextFormField(
-                controller: _correoController,
-                decoration: const InputDecoration(labelText: 'CORREO:'),
-              ),
-              TextFormField(
-                controller: _notasController,
-                decoration: const InputDecoration(labelText: 'NOTAS:'),
-              ),
-              const Text('CONTACTO 1'),
-              TextFormField(
-                controller: _contacto1NombreController,
-                decoration: const InputDecoration(labelText: 'CONTACTO:'),
-              ),
-              TextFormField(
-                controller: _contacto1CorreoController,
-                decoration: const InputDecoration(labelText: 'CORREO:'),
-              ),
-              TextFormField(
-                controller: _contacto1CelularController,
-                decoration: const InputDecoration(labelText: 'CELULAR:'),
-              ),
-              const Text('CONTACTO 2'),
-              TextFormField(
-                controller: _contacto2NombreController,
-                decoration: const InputDecoration(labelText: 'CONTACTO:'),
-              ),
-              TextFormField(
-                controller: _contacto2CorreoController,
-                decoration: const InputDecoration(labelText: 'CORREO:'),
-              ),
-              TextFormField(
-                controller: _contacto2CelularController,
-                decoration: const InputDecoration(labelText: 'CELULAR:'),
-              ),
+
+              // Contacto 2 (Solo si se elige)
+              if (_cantidadContactos == 2)
+                ExpansionTile(
+                  title: const Text('Contacto 2'),
+                  children: [
+                    _buildTextField(_contacto2NombreController, 'Nombre'),
+                    _buildEmailField(_contacto2CorreoController, 'Correo'),
+                    _buildTextField(_contacto2CelularController, 'Celular'),
+                  ],
+                ),
+
+              const SizedBox(height: 16),
+
+              // Botones de acción
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  ElevatedButton(
+                  ElevatedButton.icon(
+                    icon: const Icon(Icons.save),
+                    label: const Text('Guardar'),
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
-                        final proveedor = Proveedor(
-                          codigoProveedor: int.tryParse(_codigoProveedorController.text) ?? 0,
-                          razonSocial: _razonSocialController.text,
-                          noIdentificacion: _noIdentificacionController.text,
-                          direccion: _direccionController.text,
-                          metodoPago: _metodoPagoController.text,
-                          categoria: _categoriaController.text,
-                          telefono: _telefonoController.text,
-                          credito: _creditoController.text,
-                          correo: _correoController.text,
-                          notas: _notasController.text,
-                          contacto1Nombre: _contacto1NombreController.text,
-                          contacto1Correo: _contacto1CorreoController.text,
-                          contacto1Celular: _contacto1CelularController.text,
-                          contacto2Nombre: _contacto2NombreController.text,
-                          contacto2Correo: _contacto2CorreoController.text,
-                          contacto2Celular: _contacto2CelularController.text,
-                        );
-                        Provider.of<ProveedorProviderAlmacen>(context, listen: false)
-                            .agregarProveedor(proveedor);
+                        // Aquí iría la lógica para guardar
                       }
                     },
-                    child: const Text('GUARDAR'),
                   ),
-                  ElevatedButton(
-                    onPressed: _limpiarCasillas,
-                    child: const Text('LIMPIAR'),
+                  ElevatedButton.icon(
+                    icon: const Icon(Icons.clear),
+                    label: const Text('Limpiar'),
+                    onPressed: _limpiarCampos,
                   ),
                 ],
               ),
@@ -208,5 +238,17 @@ class _RegistroProveedoresState extends State<RegistroProveedores> {
         ),
       ),
     );
+  }
+
+  Widget _buildTextField(TextEditingController controller, String label) {
+    return TextFormField(controller: controller, decoration: InputDecoration(labelText: label));
+  }
+
+  Widget _buildNumericField(TextEditingController controller, String label) {
+    return TextFormField(controller: controller, keyboardType: TextInputType.number, decoration: InputDecoration(labelText: label));
+  }
+
+  Widget _buildEmailField(TextEditingController controller, String label) {
+    return TextFormField(controller: controller, keyboardType: TextInputType.emailAddress, decoration: InputDecoration(labelText: label));
   }
 }

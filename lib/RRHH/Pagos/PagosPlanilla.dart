@@ -4,8 +4,7 @@ class RegistroPagoConPlanilla extends StatefulWidget {
   const RegistroPagoConPlanilla({super.key});
 
   @override
-  State<RegistroPagoConPlanilla> createState() =>
-      _RegistroPagoConPlanillaState();
+  State<RegistroPagoConPlanilla> createState() => _RegistroPagoConPlanillaState();
 }
 
 class _RegistroPagoConPlanillaState extends State<RegistroPagoConPlanilla> {
@@ -45,215 +44,133 @@ class _RegistroPagoConPlanillaState extends State<RegistroPagoConPlanilla> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Registro de Pago de Colaboradores Sin Planilla'),
+        title: const Text('Registro de Pago de Colaboradores'),
+        centerTitle: true,
+        elevation: 4,
       ),
-      body: SingleChildScrollView(
+      body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Text(
-                    _fecha != null
-                        ? 'Fecha: ${_fecha!.toString().split(' ')[0]}'
-                        : 'Fecha: ',
-                  ),
-                  IconButton(
-                    onPressed: () async {
-                      final DateTime? picked = await showDatePicker(
-                        context: context,
-                        initialDate: DateTime.now(),
-                        firstDate: DateTime(1900),
-                        lastDate: DateTime.now(),
-                      );
-                      if (picked != null && picked != _fecha) {
-                        setState(() {
-                          _fecha = picked;
-                        });
-                      }
-                    },
-                    icon: const Icon(Icons.calendar_today),
-                  ),
-                ],
-              ),
-              TextFormField(
-                controller: _colaboradorController,
-                decoration: const InputDecoration(labelText: 'COLABORADOR:'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Por favor, ingresa el nombre del colaborador';
-                  }
-                  return null;
-                },
-              ),
-              Row(
-                children: [
-                  Expanded(
-                    child: TextFormField(
-                      controller: _diasMesController,
-                      decoration: const InputDecoration(
-                        labelText: 'DIAS DEL MES:',
-                      ),
-                      keyboardType: TextInputType.number,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Ingresa los días del mes';
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                  Expanded(
-                    child: TextFormField(
-                      controller: _diasLaboradosController,
-                      decoration: const InputDecoration(
-                        labelText: 'DIAS LABORADOS:',
-                      ),
-                      keyboardType: TextInputType.number,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Ingresa los días laborados';
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                  Expanded(
-                    child: TextFormField(
-                      controller: _diasFaltadosController,
-                      decoration: const InputDecoration(
-                        labelText: 'DIAS FALTADOS:',
-                      ),
-                      keyboardType: TextInputType.number,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Ingresa los días faltados';
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                ],
-              ),
-              Row(
-                children: [
-                  Expanded(
-                    child: TextFormField(
-                      controller: _sueldoBaseInicialController,
-                      decoration: const InputDecoration(
-                        labelText: 'SUELDO BASE INICIAL:',
-                      ),
-                      keyboardType: TextInputType.number,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Ingresa el sueldo base inicial';
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                  Expanded(
-                    child: TextFormField(
-                      controller: _descuentoFaltasController,
-                      decoration: const InputDecoration(
-                        labelText: 'DESCUENTO FALTAS:',
-                      ),
-                      keyboardType: TextInputType.number,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Ingresa el descuento por faltas';
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                ],
-              ),
-              TextFormField(
-                controller: _sueldoBaseController,
-                decoration: const InputDecoration(labelText: 'SUELDO BASE:'),
-                keyboardType: TextInputType.number,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Ingresa el sueldo base';
-                  }
-                  return null;
-                },
-              ),
-              Row(
-                children: [
-                  Expanded(
-                    child: TextFormField(
-                      controller: _bonoExtraordinarioController,
-                      decoration: const InputDecoration(
-                        labelText: 'BONO EXTRAORDINARIO:',
-                      ),
-                      keyboardType: TextInputType.number,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Ingresa el bono extraordinario';
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                  Expanded(
-                    child: TextFormField(
-                      controller: _adelantoController,
-                      decoration: const InputDecoration(labelText: 'ADELANTO:'),
-                      keyboardType: TextInputType.number,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Ingresa el adelanto';
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                  Expanded(
-                    child: TextFormField(
-                      controller: _otrosDescuentosController,
-                      decoration: const InputDecoration(
-                        labelText: 'OTROS DESCUENTOS:',
-                      ),
-                      keyboardType: TextInputType.number,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Ingresa otros descuentos';
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                ],
-              ),
-              TextFormField(
-                controller: _sueldoNetoController,
-                decoration: const InputDecoration(labelText: 'SUELDO NETO:'),
-                keyboardType: TextInputType.number,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Ingresa el sueldo neto';
-                  }
-                  return null;
-                },
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    // Guardar los datos
-                    _limpiarCasillas(); // Limpiar después de guardar
-                  }
-                },
-                child: const Text('GUARDAR'),
-              ),
-            ],
+        child: SingleChildScrollView(
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                _buildFechaSelector(),
+                _buildTextField(_colaboradorController, 'Colaborador', Icons.person),
+                _buildRowFields([
+                  _buildTextField(_diasMesController, 'Días del Mes', Icons.calendar_today, isNumeric: true),
+                  _buildTextField(_diasLaboradosController, 'Días Laborados', Icons.work, isNumeric: true),
+                  _buildTextField(_diasFaltadosController, 'Días Faltados', Icons.error, isNumeric: true),
+                ]),
+                _buildRowFields([
+                  _buildTextField(_sueldoBaseInicialController, 'Sueldo Base Inicial', Icons.attach_money, isNumeric: true),
+                  _buildTextField(_descuentoFaltasController, 'Descuento Faltas', Icons.money_off, isNumeric: true),
+                ]),
+                _buildTextField(_sueldoBaseController, 'Sueldo Base', Icons.attach_money, isNumeric: true),
+                _buildRowFields([
+                  _buildTextField(_bonoExtraordinarioController, 'Bono Extraordinario', Icons.card_giftcard, isNumeric: true),
+                  _buildTextField(_adelantoController, 'Adelanto', Icons.money, isNumeric: true),
+                  _buildTextField(_otrosDescuentosController, 'Otros Descuentos', Icons.remove_circle, isNumeric: true),
+                ]),
+                _buildTextField(_sueldoNetoController, 'Sueldo Neto', Icons.account_balance_wallet, isNumeric: true),
+                const SizedBox(height: 20),
+                _buildBotones(),
+              ],
+            ),
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildFechaSelector() {
+    return Card(
+      margin: const EdgeInsets.symmetric(vertical: 10),
+      elevation: 3,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      child: ListTile(
+        title: Text(
+          _fecha != null ? 'Fecha: ${_fecha!.toString().split(' ')[0]}' : 'Seleccionar Fecha',
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
+        leading: const Icon(Icons.date_range, color: Colors.blue),
+        trailing: IconButton(
+          icon: const Icon(Icons.calendar_today, color: Colors.blue),
+          onPressed: () async {
+            final DateTime? picked = await showDatePicker(
+              context: context,
+              initialDate: DateTime.now(),
+              firstDate: DateTime(1900),
+              lastDate: DateTime.now(),
+            );
+            if (picked != null && picked != _fecha) {
+              setState(() {
+                _fecha = picked;
+              });
+            }
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTextField(TextEditingController controller, String label, IconData icon, {bool isNumeric = false}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6),
+      child: TextFormField(
+        controller: controller,
+        keyboardType: isNumeric ? TextInputType.number : TextInputType.text,
+        decoration: InputDecoration(
+          labelText: label,
+          prefixIcon: Icon(icon),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+        ),
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return 'Campo requerido';
+          }
+          return null;
+        },
+      ),
+    );
+  }
+
+  Widget _buildRowFields(List<Widget> fields) {
+    return Row(
+      children: fields.map((field) => Expanded(child: Padding(padding: const EdgeInsets.all(4.0), child: field))).toList(),
+    );
+  }
+
+  Widget _buildBotones() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: [
+        ElevatedButton.icon(
+          onPressed: () {
+            if (_formKey.currentState!.validate()) {
+              // Guardar los datos
+              _limpiarCasillas();
+            }
+          },
+          icon: const Icon(Icons.save),
+          label: const Text('Guardar'),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.green,
+            foregroundColor: Colors.white,
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+          ),
+        ),
+        ElevatedButton.icon(
+          onPressed: _limpiarCasillas,
+          icon: const Icon(Icons.clear),
+          label: const Text('Limpiar'),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.red,
+            foregroundColor: Colors.white,
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+          ),
+        ),
+      ],
     );
   }
 }

@@ -12,7 +12,7 @@ class ControlIngresoScreen extends StatefulWidget {
 }
 
 class _ControlIngresoScreenState extends State<ControlIngresoScreen> {
-  // Variables de estado para los checkboxes de ingreso
+  // Variables de estado para los checkboxes
   bool tarjetaPropiedadIngresoSi = false;
   bool tarjetaPropiedadIngresoNo = false;
   bool soatFisicoIngresoSi = false;
@@ -24,7 +24,6 @@ class _ControlIngresoScreenState extends State<ControlIngresoScreen> {
   bool certGasIngresoSi = false;
   bool certGasIngresoNo = false;
 
-  // Variables de estado para los campos de texto de ingreso
   String otrosDocumentosIngreso = '';
   String recepcionClienteNombre = '';
   String recepcionClienteDni = '';
@@ -36,386 +35,144 @@ class _ControlIngresoScreenState extends State<ControlIngresoScreen> {
   String combustibleE = '';
   String combustibleF = '';
 
-  // Variables de estado para los checkboxes de salida
-  bool tarjetaPropiedadSalidaSi = false;
-  bool tarjetaPropiedadSalidaNo = false;
-  bool soatFisicoSalidaSi = false;
-  bool soatFisicoSalidaNo = false;
-  bool soatDigitalSalidaSi = false;
-  bool soatDigitalSalidaNo = false;
-  bool rtvSalidaSi = false;
-  bool rtvSalidaNo = false;
-  bool certGasSalidaSi = false;
-  bool certGasSalidaNo = false;
-
-  // Variables de estado para los campos de texto de salida
-  String otrosDocumentosSalida = '';
-  String entregaTallerNombre = '';
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('CONFORMIDAD DE INGRESO'),
+        title: const Text('Conformidad de Ingreso'),
+        backgroundColor: Colors.blueAccent,
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text('CONFORMIDAD DE INGRESO:', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-              SizedBox(height: 20),
-              Text('DOCUMENTOS DE INGRESO:'),
-              _buildDocumentoRow(context, 'Tarjeta de Propiedad', tarjetaPropiedadIngresoSi, tarjetaPropiedadIngresoNo, (bool? si) {
-                setState(() {
-                  tarjetaPropiedadIngresoSi = si ?? false;
-                  tarjetaPropiedadIngresoNo = !tarjetaPropiedadIngresoSi;
-                });
-              }, (bool? no) {
-                setState(() {
-                  tarjetaPropiedadIngresoNo = no ?? false;
-                  tarjetaPropiedadIngresoSi = !tarjetaPropiedadIngresoNo;
-                });
-              }),
-              _buildDocumentoRow(context, 'Soat Fisico', soatFisicoIngresoSi, soatFisicoIngresoNo, (bool? si) {
-                setState(() {
-                  soatFisicoIngresoSi = si ?? false;
-                  soatFisicoIngresoNo = !soatFisicoIngresoSi;
-                });
-              }, (bool? no) {
-                setState(() {
-                  soatFisicoIngresoNo = no ?? false;
-                  soatFisicoIngresoSi = !soatFisicoIngresoNo;
-                });
-              }, fechaVencimiento: true),
-              _buildDocumentoRow(context, 'Soat digital', soatDigitalIngresoSi, soatDigitalIngresoNo, (bool? si) {
-                setState(() {
-                  soatDigitalIngresoSi = si ?? false;
-                  soatDigitalIngresoNo = !soatDigitalIngresoSi;
-                });
-              }, (bool? no) {
-                setState(() {
-                  soatDigitalIngresoNo = no ?? false;
-                  soatDigitalIngresoSi = !soatDigitalIngresoNo;
-                });
-              }, fechaVencimiento: true),
-              _buildDocumentoRow(context, 'RTV', rtvIngresoSi, rtvIngresoNo, (bool? si) {
-                setState(() {
-                  rtvIngresoSi = si ?? false;
-                  rtvIngresoNo = !rtvIngresoSi;
-                });
-              }, (bool? no) {
-                setState(() {
-                  rtvIngresoNo = no ?? false;
-                  rtvIngresoSi = !rtvIngresoNo;
-                });
-              }, fechaVencimiento: true),
-              _buildDocumentoRow(context, 'Cert. Gas', certGasIngresoSi, certGasIngresoNo, (bool? si) {
-                setState(() {
-                  certGasIngresoSi = si ?? false;
-                  certGasIngresoNo = !certGasIngresoSi;
-                });
-              }, (bool? no) {
-                setState(() {
-                  certGasIngresoNo = no ?? false;
-                  certGasIngresoSi = !certGasIngresoNo;
-                });
-              }, fechaVencimiento: true),
-              SizedBox(height: 20),
-              Text('OTROS DOCUMENTOS QUE DEJA:'),
-              TextField(
-                maxLines: 2,
-                decoration: InputDecoration(border: OutlineInputBorder()),
-                onChanged: (value) {
-                  setState(() {
-                    otrosDocumentosIngreso = value;
-                  });
-                },
-              ),
-              SizedBox(height: 20),
-              Text('RECEPCION CLIENTE:'),
-              Image.asset('assets/honda_hrv.png', width: 200), // Reemplaza con la ruta de tu imagen
-              TextField(
-                decoration: InputDecoration(labelText: 'NOMBRE'),
-                onChanged: (value) {
-                  setState(() {
-                    recepcionClienteNombre = value;
-                  });
-                },
-              ),
-              TextField(
-                decoration: InputDecoration(labelText: 'DNI'),
-                onChanged: (value) {
-                  setState(() {
-                    recepcionClienteDni = value;
-                  });
-                },
-              ),
-              TextField(
-                decoration: InputDecoration(labelText: 'CARGO'),
-                onChanged: (value) {
-                  setState(() {
-                    recepcionClienteCargo = value;
-                  });
-                },
-              ),
-              SizedBox(height: 20),
-              Text('RECEPCION DE TALLER:'),
-              TextField(
-                decoration: InputDecoration(labelText: 'NOMBRE'),
-                onChanged: (value) {
-                  setState(() {
-                    recepcionTallerNombre = value;
-                  });
-                },
-              ),
-              TextField(
-                decoration: InputDecoration(labelText: 'DNI'),
-                onChanged: (value) {
-                  setState(() {
-                    recepcionTallerDni = value;
-                  });
-                },
-              ),
-              TextField(
-                decoration: InputDecoration(labelText: 'CONFORMIDAD'),
-                onChanged: (value) {
-                  setState(() {
-                    conformidad = value;
-                  });
-                },
-              ),
-              Row(
-                children: <Widget>[
-                  Text('KILOMETRAJE:'),
-                  SizedBox(width: 20),
-                  Expanded(
-                    child: TextFormField(
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        contentPadding: EdgeInsets.symmetric(horizontal: 10),
-                      ),
-                      onChanged: (value) {
-                        setState(() {
-                          kilometraje = value;
-                        });
-                      },
-                    ),
-                  ),
-                  SizedBox(width: 20),
-                  Text('E'),
-                  Expanded(
-                    child: TextFormField(
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        contentPadding: EdgeInsets.symmetric(horizontal: 10),
-                      ),
-                      onChanged: (value) {
-                        setState(() {
-                          combustibleE = value;
-                        });
-                      },
-                    ),
-                  ),
-                  SizedBox(width: 20),
-                  Text('F'),
-                  Expanded(
-                    child: TextFormField(
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(), contentPadding: EdgeInsets.symmetric(horizontal: 10),
-                      ),
-                      onChanged: (value) {
-                        setState(() {
-                          combustibleF = value;
-                        });
-                      },
-                    ),
-                  ),
-                ],
-              ),
-              DocumentosSalida(
-                tarjetaPropiedadSalidaSi: tarjetaPropiedadSalidaSi,
-                tarjetaPropiedadSalidaNo: tarjetaPropiedadSalidaNo,
-                soatFisicoSalidaSi: soatFisicoSalidaSi,
-                soatFisicoSalidaNo: soatFisicoSalidaNo,
-                soatDigitalSalidaSi: soatDigitalSalidaSi,
-                soatDigitalSalidaNo: soatDigitalSalidaNo,
-                rtvSalidaSi: rtvSalidaSi,
-                rtvSalidaNo: rtvSalidaNo,
-                certGasSalidaSi: certGasSalidaSi,
-                certGasSalidaNo: certGasSalidaNo,
-                otrosDocumentosSalida: otrosDocumentosSalida,
-                onTarjetaPropiedadSiChanged: (bool? si) {
-                  setState(() {
-                    tarjetaPropiedadSalidaSi = si ?? false;
-                    tarjetaPropiedadSalidaNo = !tarjetaPropiedadSalidaSi;
-                  });
-                },
-                onTarjetaPropiedadNoChanged: (bool? no) {
-                  setState(() {
-                    tarjetaPropiedadSalidaNo = no ?? false;
-                    tarjetaPropiedadSalidaSi = !tarjetaPropiedadSalidaNo;
-                  });
-                },
-                onSoatFisicoSiChanged: (bool? si) {
-                  setState(() {
-                    soatFisicoSalidaSi = si ?? false;
-                    soatFisicoSalidaNo = !soatFisicoSalidaSi;
-                  });
-                },
-                onSoatFisicoNoChanged: (bool? no) {
-                  setState(() {
-                    soatFisicoSalidaNo = no ?? false;
-                    soatFisicoSalidaSi = !soatFisicoSalidaNo;
-                  });
-                },
-                onSoatDigitalSiChanged: (bool? si) {
-                  setState(() {
-                    soatDigitalSalidaSi = si ?? false;
-                    soatDigitalSalidaNo = !soatDigitalSalidaSi;
-                  });
-                },
-                onSoatDigitalNoChanged: (bool? no) {
-                  setState(() {
-                    soatDigitalSalidaNo = no ?? false;
-                    soatDigitalSalidaSi = !soatDigitalSalidaNo;
-                  });
-                },
-                onRtvSiChanged: (bool? si) {
-                  setState(() {
-                    rtvSalidaSi = si ?? false;
-                    rtvSalidaNo = !rtvSalidaSi;
-                  });
-                },
-                onRtvNoChanged: (bool? no) {
-                  setState(() {
-                    rtvSalidaNo = no ?? false;
-                    rtvSalidaSi = !rtvSalidaNo;
-                  });
-                },
-                onCertGasSiChanged: (bool? si) {
-                  setState(() {
-                    certGasSalidaSi = si ?? false;
-                    certGasSalidaNo = !certGasSalidaSi;
-                  });
-                },
-                onCertGasNoChanged: (bool? no) {
-                  setState(() {
-                    certGasSalidaNo = no ?? false;
-                    certGasSalidaSi = !certGasSalidaNo;
-                  });
-                },
-                onOtrosDocumentosChanged: (String value) {
-                  setState(() {
-                    otrosDocumentosSalida = value;
-                  });
-                },
-              ),
-              SizedBox(height: 20),
-              Text('ENTREGA DE TALLER:'),
-              TextField(
-                decoration: InputDecoration(labelText: 'NOMBRE'),
-                onChanged: (value) {
-                  setState(() {
-                    entregaTallerNombre = value;
-                  });
-                },
-              ),
-              SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _imprimirInventario,
-                child: Text('Imprimir Inventario'),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
+        child: Column(
+          children: [
+            _buildSectionTitle('Documentos de Ingreso'),
+            _buildDocumentoCard('Tarjeta de Propiedad', tarjetaPropiedadIngresoSi, tarjetaPropiedadIngresoNo, 
+              (bool? value) => setState(() => tarjetaPropiedadIngresoSi = value!), 
+              (bool? value) => setState(() => tarjetaPropiedadIngresoNo = value!)
+            ),
+            _buildDocumentoCard('Soat Fisico', soatFisicoIngresoSi, soatFisicoIngresoNo, 
+              (bool? value) => setState(() => soatFisicoIngresoSi = value!), 
+              (bool? value) => setState(() => soatFisicoIngresoNo = value!)
+            ),
+            _buildDocumentoCard('RTV', rtvIngresoSi, rtvIngresoNo, 
+              (bool? value) => setState(() => rtvIngresoSi = value!), 
+              (bool? value) => setState(() => rtvIngresoNo = value!)
+            ),
+            _buildTextField('Otros Documentos que Deja:', otrosDocumentosIngreso, (value) {
+              setState(() {
+                otrosDocumentosIngreso = value;
+              });
+            }),
 
-  void _imprimirInventario() async {
-    List<Map<String, dynamic>> inventario = obtenerDatosInventario();
-    final pdfBytes = await generarContenidoParaImprimir(inventario);
-    Printing.layoutPdf(onLayout: (_) => pdfBytes);
-  }
+            const SizedBox(height: 20),
+            _buildSectionTitle('Recepción Cliente'),
+            _buildTextField('Nombre', recepcionClienteNombre, (value) => setState(() => recepcionClienteNombre = value)),
+            _buildTextField('DNI', recepcionClienteDni, (value) => setState(() => recepcionClienteDni = value)),
+            _buildTextField('Cargo', recepcionClienteCargo, (value) => setState(() => recepcionClienteCargo = value)),
 
-  List<Map<String, dynamic>> obtenerDatosInventario() {
-    // Reemplaza esto con tu lógica para obtener los datos del inventario
-    return [
-      {'vehiculo': 'Vehículo 1', 'marca': 'Marca 1', 'modelo': 'Modelo 1'},
-      {'vehiculo': 'Vehículo 2', 'marca': 'Marca 2', 'modelo': 'Modelo 2'},
-      // ... más datos del inventario ...
-    ];
-  }
+            const SizedBox(height: 20),
+            _buildSectionTitle('Recepción Taller'),
+            _buildTextField('Nombre', recepcionTallerNombre, (value) => setState(() => recepcionTallerNombre = value)),
+            _buildTextField('DNI', recepcionTallerDni, (value) => setState(() => recepcionTallerDni = value)),
+            _buildTextField('Conformidad', conformidad, (value) => setState(() => conformidad = value)),
 
-  Future<Uint8List> generarContenidoParaImprimir(List<Map<String, dynamic>> inventario) async {
-    final pdf = pw.Document();
-    pdf.addPage(
-      pw.Page(
-        build: (pw.Context context) {
-          return pw.Column(
-            crossAxisAlignment: pw.CrossAxisAlignment.start,
-            children: [
-              pw.Text('INVENTARIO DE VEHÍCULOS', style: pw.TextStyle(fontSize: 20)),
-              pw.SizedBox(height: 20),
-              for (var vehiculo in inventario) ...[
-                pw.Text('Vehículo: ${vehiculo['vehiculo']}'),
-                pw.Text('Marca: ${vehiculo['marca']}'),
-                pw.Text('Modelo: ${vehiculo['modelo']}'),
-                pw.SizedBox(height: 10),
+            const SizedBox(height: 20),
+            _buildSectionTitle('Kilometraje y Combustible'),
+            Row(
+              children: [
+                Expanded(child: _buildTextField('Kilometraje', kilometraje, (value) => setState(() => kilometraje = value))),
+                const SizedBox(width: 10),
+                Expanded(child: _buildTextField('Combustible (E)', combustibleE, (value) => setState(() => combustibleE = value))),
+                const SizedBox(width: 10),
+                Expanded(child: _buildTextField('Combustible (F)', combustibleF, (value) => setState(() => combustibleF = value))),
               ],
-            ],
-          );
-        },
+            ),
+
+            const SizedBox(height: 30),
+            _buildButtons(),
+          ],
+        ),
       ),
     );
-    return pdf.save();
   }
 
-  // Función para construir una fila de documento
-  Widget _buildDocumentoRow(BuildContext context, String nombreDocumento, bool siValue, bool noValue, Function(bool?) onSiChanged, Function(bool?) onNoChanged, {bool fechaVencimiento = false}) {
+  // Card para los documentos de ingreso
+  Widget _buildDocumentoCard(String title, bool siValue, bool noValue, Function(bool?) onSiChanged, Function(bool?) onNoChanged) {
+    return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+      elevation: 5,
+      child: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: Row(
+          children: [
+            Expanded(child: Text(title, style: const TextStyle(fontSize: 16))),
+            Checkbox(value: siValue, onChanged: onSiChanged),
+            const Text('Sí'),
+            Checkbox(value: noValue, onChanged: onNoChanged),
+            const Text('No'),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // Función para mostrar un título de sección
+  Widget _buildSectionTitle(String title) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10.0),
+      child: Text(
+        title,
+        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blueAccent),
+      ),
+    );
+  }
+
+  // Función para construir un campo de texto
+  Widget _buildTextField(String label, String value, Function(String) onChanged) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 5.0),
+      child: TextField(
+        onChanged: onChanged,
+        decoration: InputDecoration(
+          labelText: label,
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+        ),
+      ),
+    );
+  }
+
+  // Botones de acción
+  Widget _buildButtons() {
     return Row(
-      children: <Widget>[
-        Text(nombreDocumento),
-        Checkbox(
-          value: siValue,
-          onChanged: onSiChanged,
-        ),
-        Text('SI'),
-        Checkbox(
-          value: noValue,
-          onChanged: onNoChanged,
-        ),
-        Text('NO'),
-        if (fechaVencimiento) ...[
-          SizedBox(width: 20),
-          Text('VENCE:'),
-          SizedBox(width: 10),
-          ElevatedButton(
-            onPressed: () {
-              // Lógica para seleccionar la fecha de vencimiento
-              _seleccionarFechaVencimiento(context);
-            },
-            child: Text('Seleccionar Fecha'),
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        ElevatedButton.icon(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: const Icon(Icons.arrow_back),
+          label: const Text('Atrás'),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.redAccent,
+            foregroundColor: Colors.white,
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
           ),
-        ],
+        ),
+        ElevatedButton.icon(
+          onPressed: () {
+            // Lógica para guardar o continuar
+          },
+          icon: const Icon(Icons.save),
+          label: const Text('Guardar'),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.green,
+            foregroundColor: Colors.white,
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+          ),
+        ),
       ],
     );
-  }
-
-  // Función para seleccionar la fecha de vencimiento
-  Future<void> _seleccionarFechaVencimiento(BuildContext context) async {
-    final DateTime? fechaSeleccionada = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2101),
-    );
-
-    if (fechaSeleccionada != null) {
-      // Lógica para guardar la fecha seleccionada
-      print('Fecha seleccionada: $fechaSeleccionada');
-    }
   }
 }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart'; // Para formatear la fecha
+import 'package:intl/intl.dart';
 
 class RegistroOrdenTrabajo extends StatefulWidget {
   const RegistroOrdenTrabajo({super.key});
@@ -11,7 +11,6 @@ class RegistroOrdenTrabajo extends StatefulWidget {
 class _RegistroOrdenTrabajoState extends State<RegistroOrdenTrabajo> {
   final _formKey = GlobalKey<FormState>();
 
-  // Controladores para los campos de texto
   final _noCotController = TextEditingController();
   final _vehiculoController = TextEditingController();
   final _anoFabricacionController = TextEditingController();
@@ -30,10 +29,31 @@ class _RegistroOrdenTrabajoState extends State<RegistroOrdenTrabajo> {
   final _contactoController = TextEditingController();
 
   DateTime? _fechaIngreso;
-  String? _tecnicoSeleccionado; // Para el técnico seleccionado
+  String? _tecnicoSeleccionado;
 
-  // Lista de técnicos (puedes obtenerla de una API o base de datos)
   final List<String> _tecnicos = ['Técnico 1', 'Técnico 2', 'Técnico 3'];
+
+  void _limpiarFormulario() {
+    _noCotController.clear();
+    _vehiculoController.clear();
+    _anoFabricacionController.clear();
+    _modeloController.clear();
+    _kmController.clear();
+    _cantidadController.clear();
+    _horasController.clear();
+    _anoModeloController.clear();
+    _marcaController.clear();
+    _placaController.clear();
+    _tipoUnidadController.clear();
+    _clienteController.clear();
+    _aseguradosController.clear();
+    _opcionesController.clear();
+    _descripcionController.clear();
+    _contactoController.clear();
+    _fechaIngreso = null;
+    _tecnicoSeleccionado = null;
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,168 +64,170 @@ class _RegistroOrdenTrabajoState extends State<RegistroOrdenTrabajo> {
         child: Form(
           key: _formKey,
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              TextFormField(
-                controller: _noCotController,
-                decoration: const InputDecoration(labelText: 'Nº COT.:'),
-              ),
-              TextFormField(
-                controller: _vehiculoController,
-                decoration: const InputDecoration(labelText: 'VEHICULO:'),
-              ),
-              Row(
+              _buildCard(
+                title: 'Información General',
                 children: [
-                  Expanded(
-                    child: TextFormField(
-                      controller: _anoFabricacionController,
-                      decoration: const InputDecoration(labelText: 'AÑO FABRICACION:'),
-                    ),
+                  _buildTextField(_noCotController, 'Nº COT.'),
+                  _buildTextField(_clienteController, 'Cliente'),
+                ],
+              ),
+              _buildCard(
+                title: 'Datos del Vehículo',
+                children: [
+                  _buildTextField(_vehiculoController, 'Vehículo'),
+                  Row(
+                    children: [
+                      Expanded(child: _buildTextField(_anoFabricacionController, 'Año Fabricación', isNumber: true)),
+                      const SizedBox(width: 10),
+                      Expanded(child: _buildTextField(_anoModeloController, 'Año Modelo', isNumber: true)),
+                    ],
                   ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: TextFormField(
-                      controller: _modeloController,
-                      decoration: const InputDecoration(labelText: 'MODELO:'),
-                    ),
+                  Row(
+                    children: [
+                      Expanded(child: _buildTextField(_marcaController, 'Marca')),
+                      const SizedBox(width: 10),
+                      Expanded(child: _buildTextField(_modeloController, 'Modelo')),
+                    ],
                   ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: TextFormField(
-                      controller: _kmController,
-                      decoration: const InputDecoration(labelText: 'KM:'),
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: TextFormField(
-                      controller: _cantidadController,
-                      decoration: const InputDecoration(labelText: 'CANTIDAD:'),
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: TextFormField(
-                      controller: _horasController,
-                      decoration: const InputDecoration(labelText: 'HORAS:'),
-                    ),
+                  Row(
+                    children: [
+                      Expanded(child: _buildTextField(_placaController, 'Placa')),
+                      const SizedBox(width: 10),
+                      Expanded(child: _buildTextField(_tipoUnidadController, 'Tipo Unidad')),
+                    ],
                   ),
                 ],
               ),
-              Row(
+              _buildCard(
+                title: 'Detalles de Trabajo',
                 children: [
-                  Expanded(
-                    child: TextFormField(
-                      controller: _anoModeloController,
-                      decoration: const InputDecoration(labelText: 'AÑO MODELO:'),
-                    ),
+                  _buildTextField(_kmController, 'Kilometraje (KM)', isNumber: true),
+                  Row(
+                    children: [
+                      Expanded(child: _buildTextField(_cantidadController, 'Cantidad', isNumber: true)),
+                      const SizedBox(width: 10),
+                      Expanded(child: _buildTextField(_horasController, 'Horas', isNumber: true)),
+                    ],
                   ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: TextFormField(
-                      controller: _marcaController,
-                      decoration: const InputDecoration(labelText: 'MARCA:'),
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: TextFormField(
-                      controller: _placaController,
-                      decoration: const InputDecoration(labelText: 'PLACA:'),
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: TextFormField(
-                      controller: _tipoUnidadController,
-                      decoration: const InputDecoration(labelText: 'TIPO UNIDAD:'),
-                    ),
-                  ),
+                  _buildTextField(_aseguradosController, 'Asegurados'),
+                  _buildTextField(_opcionesController, 'Opciones'),
+                  _buildTextField(_descripcionController, 'Descripción', maxLines: 3),
+                  _buildTextField(_contactoController, 'Contacto'),
                 ],
               ),
-              TextFormField(
-                controller: _clienteController,
-                decoration: const InputDecoration(labelText: 'CLIENTE:'),
-              ),
-              TextFormField(
-                controller: _aseguradosController,
-                decoration: const InputDecoration(labelText: 'ASEGURADOS:'),
-              ),
-              TextFormField(
-                controller: _opcionesController,
-                decoration: const InputDecoration(labelText: 'OPCIONES:'),
-              ),
-              TextFormField(
-                controller: _descripcionController,
-                decoration: const InputDecoration(labelText: 'DESCRIPCION:'),
-              ),
-              TextFormField(
-                controller: _contactoController,
-                decoration: const InputDecoration(labelText: 'CONTACTO:'),
-              ),
-              Row(
+              _buildCard(
+                title: 'Fecha y Técnico',
                 children: [
-                  Text(
-                    _fechaIngreso != null
-                        ? 'Fecha Ingreso: ${DateFormat('dd/MM/yyyy').format(_fechaIngreso!)}'
-                        : 'Fecha Ingreso: ',
+                  Row(
+                    children: [
+                      Expanded(
+                        child: ListTile(
+                          title: Text(
+                            _fechaIngreso != null
+                                ? 'Fecha Ingreso: ${DateFormat('dd/MM/yyyy').format(_fechaIngreso!)}'
+                                : 'Seleccionar Fecha',
+                          ),
+                          trailing: const Icon(Icons.calendar_today),
+                          onTap: () async {
+                            final DateTime? picked = await showDatePicker(
+                              context: context,
+                              initialDate: DateTime.now(),
+                              firstDate: DateTime(2000),
+                              lastDate: DateTime.now(),
+                            );
+                            if (picked != null) {
+                              setState(() {
+                                _fechaIngreso = picked;
+                              });
+                            }
+                          },
+                        ),
+                      ),
+                    ],
                   ),
-                  IconButton(
-                    onPressed: () async {
-                      final DateTime? picked = await showDatePicker(
-                        context: context,
-                        initialDate: DateTime.now(),
-                        firstDate: DateTime(1900),
-                        lastDate: DateTime.now(),
+                  DropdownButtonFormField<String>(
+                    value: _tecnicoSeleccionado,
+                    items: _tecnicos.map((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
                       );
-                      if (picked != null && picked != _fechaIngreso) {
-                        setState(() {
-                          _fechaIngreso = picked;
-                        });
-                      }
+                    }).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        _tecnicoSeleccionado = value;
+                      });
                     },
-                    icon: const Icon(Icons.calendar_today),
+                    decoration: const InputDecoration(labelText: 'Técnico Asignado'),
                   ),
                 ],
               ),
-              DropdownButtonFormField<String>(
-                value: _tecnicoSeleccionado,
-                items: _tecnicos.map((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
-                onChanged: (value) {
-                  setState(() {
-                    _tecnicoSeleccionado = value;
-                  });
-                },
-                decoration: const InputDecoration(labelText: 'TECNICO:'),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        // Lógica para guardar la orden de trabajo
-                      }
-                    },
-                    child: const Text('GUARDAR'),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      // Lógica para limpiar el formulario
-                    },
-                    child: const Text('NUEVO'),
-                  ),
-                ],
-              ),
+              const SizedBox(height: 20),
+              _buildButtons(),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildTextField(TextEditingController controller, String label, {bool isNumber = false, int maxLines = 1}) {
+    return TextFormField(
+      controller: controller,
+      keyboardType: isNumber ? TextInputType.number : TextInputType.text,
+      maxLines: maxLines,
+      decoration: InputDecoration(
+        labelText: label,
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      ),
+    );
+  }
+
+  Widget _buildCard({required String title, required List<Widget> children}) {
+    return Card(
+      elevation: 4,
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              title,
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 10),
+            ...children.map((child) => Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4.0),
+                  child: child,
+                )),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildButtons() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: [
+        ElevatedButton(
+          onPressed: () {
+            if (_formKey.currentState!.validate()) {
+              // Guardar datos
+            }
+          },
+          child: const Text('GUARDAR'),
+        ),
+        ElevatedButton(
+          onPressed: _limpiarFormulario,
+          style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+          child: const Text('NUEVO', style: TextStyle(color: Colors.white)),
+        ),
+      ],
     );
   }
 }

@@ -37,244 +37,176 @@ class _RegistroCotizacionState extends State<RegistroCotizacion> {
   DateTime? _fecha;
 
   @override
-  void initState() {
-    super.initState();
-    _cargarDatos(); // Llama a la función para cargar los datos iniciales
-  }
-
-  Future<void> _cargarDatos() async {
-    // Aquí puedes cargar los datos desde una base de datos o API
-    // Por ejemplo:
-    // _proveedores = await obtenerProveedores();
-
-    // Luego, actualiza el estado para que los DropdownButton se actualicen
-    setState(() {});
-  }
-
-  // ignore: unused_element
-  void _limpiarCasillas() {
-    _codCotizacionController.clear();
-    _clienteController.clear();
-    _tipoVehiculoController.clear();
-    _placaController.clear();
-    _marcaVehiculoController.clear();
-    _modeloVehiculoController.clear();
-    _empresaProveedorController.clear();
-    _rucProveedorController.clear();
-    _cotProvController.clear();
-    _proveedorController.clear();
-    _telefonoProveedorController.clear();
-    _marcaProductoController.clear();
-    _medidaProductoController.clear();
-    _descripcionProductoController.clear();
-    _precioProductoController.clear();
-    _cantidadProductoController.clear();
-    _subtotalController.clear();
-    _igvController.clear();
-    _totalController.clear();
-    _fecha = null;
-
-    setState(() {}); // Actualiza el estado para limpiar la fecha
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Registro de Cotización'),
+        centerTitle: true,
+        elevation: 2,
+        backgroundColor: Colors.blueAccent,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Código de cotización y fecha en la misma línea
-              Row(
+              _buildCard(
+                context,
+                title: 'Datos Generales',
                 children: [
-                  Expanded(
-                    child: TextFormField(
-                      controller: _codCotizacionController,
-                      decoration: const InputDecoration(labelText: 'COD. COT:'),
-                      enabled: false,
-                    ),
-                  ),
-                  Expanded(
-                    child: Row(
-                      children: [
-                        Text(
-                          _fecha != null
-                              ? 'Fecha: ${_fecha!.toString().split(' ')[0]}'
-                              : 'Fecha: ',
-                        ),
-                        IconButton(
-                          onPressed: () async {
-                            final DateTime? picked = await showDatePicker(
-                              context: context,
-                              initialDate: DateTime.now(),
-                              firstDate: DateTime(1900),
-                              lastDate: DateTime.now(),
-                            );
-                            if (picked != null && picked != _fecha) {
-                              setState(() {
-                                _fecha = picked;
-                              });
-                            }
-                          },
-                          icon: const Icon(Icons.calendar_today),
-                        ),
-                      ],
-                    ),
-                  ),
+                  _buildTextField(_codCotizacionController, 'Código Cotización', enabled: false),
+                  _buildDatePicker(context),
+                  _buildTextField(_clienteController, 'Cliente'),
                 ],
               ),
-              // Cliente
-              TextFormField(
-                controller: _clienteController,
-                decoration: const InputDecoration(labelText: 'CLIENTE:'),
-              ),
-              // Datos del vehículo en la misma línea
-              Row(
+              _buildCard(
+                context,
+                title: 'Datos del Vehículo',
                 children: [
-                  Expanded(
-                    child: TextFormField(
-                      controller: _tipoVehiculoController,
-                      decoration: const InputDecoration(labelText: 'TIPO:'),
-                    ),
-                  ),
-                  Expanded(
-                    child: TextFormField(
-                      controller: _placaController,
-                      decoration: const InputDecoration(labelText: 'PLACA:'),
-                    ),
-                  ),
+                  _buildTwoFields(_tipoVehiculoController, 'Tipo', _placaController, 'Placa'),
+                  _buildTwoFields(_marcaVehiculoController, 'Marca', _modeloVehiculoController, 'Modelo'),
                 ],
               ),
-              // Marca y modelo del vehículo en la misma línea
-              Row(
+              _buildCard(
+                context,
+                title: 'Datos del Proveedor',
                 children: [
-                  Expanded(
-                    child: TextFormField(
-                      controller: _marcaVehiculoController,
-                      decoration: const InputDecoration(labelText: 'MARCA:'),
-                    ),
-                  ),
-                  Expanded(
-                    child: TextFormField(
-                      controller: _modeloVehiculoController,
-                      decoration: const InputDecoration(labelText: 'MODELO:'),
-                    ),
-                  ),
+                  _buildTextField(_empresaProveedorController, 'Empresa'),
+                  _buildTextField(_rucProveedorController, 'RUC'),
+                  _buildTextField(_cotProvController, 'Cotización Proveedor'),
+                  _buildTwoFields(_proveedorController, 'Proveedor', _telefonoProveedorController, 'Teléfono'),
                 ],
               ),
-              // Datos del proveedor
-              TextFormField(
-                controller: _empresaProveedorController,
-                decoration: const InputDecoration(labelText: 'EMPRESA:'),
-              ),
-              TextFormField(
-                controller: _rucProveedorController,
-                decoration: const InputDecoration(labelText: 'RUC:'),
-              ),
-              TextFormField(
-                controller: _cotProvController,
-                decoration: const InputDecoration(labelText: 'COT. PROV.:'),
-              ),
-              TextFormField(
-                controller: _proveedorController,
-                decoration: const InputDecoration(labelText: 'PROVEEDOR:'),
-              ),
-              TextFormField(
-                controller: _telefonoProveedorController,
-                decoration: const InputDecoration(labelText: 'TELEFONO:'),
-              ),
-              // Datos del producto
-              TextFormField(
-                controller: _marcaProductoController,
-                decoration: const InputDecoration(labelText: 'MARCA:'),
-              ),
-              TextFormField(
-                controller: _medidaProductoController,
-                decoration: const InputDecoration(labelText: 'MEDIDA:'),
-              ),
-              TextFormField(
-                controller: _descripcionProductoController,
-                decoration: const InputDecoration(labelText: 'DESCRIPCION:'),
-              ),
-              // Precio y cantidad del producto en la misma línea
-              Row(
+              _buildCard(
+                context,
+                title: 'Datos del Producto',
                 children: [
-                  Expanded(
-                    child: TextFormField(
-                      controller: _precioProductoController,
-                      decoration: const InputDecoration(labelText: 'PRECIO:'),
-                    ),
-                  ),
-                  Expanded(
-                    child: TextFormField(
-                      controller: _cantidadProductoController,
-                      decoration: const InputDecoration(labelText: 'CANTIDAD:'),
-                    ),
-                  ),
+                  _buildTwoFields(_marcaProductoController, 'Marca', _medidaProductoController, 'Medida'),
+                  _buildTextField(_descripcionProductoController, 'Descripción'),
+                  _buildTwoFields(_precioProductoController, 'Precio', _cantidadProductoController, 'Cantidad'),
                 ],
               ),
-              // Subtotal, IGV y Total
-              TextFormField(
-                controller: _subtotalController,
-                decoration: const InputDecoration(labelText: 'SUBTOTAL:'),
-              ),
-              TextFormField(
-                controller: _igvController,
-                decoration: const InputDecoration(labelText: 'IGV:'),
-              ),
-              TextFormField(
-                controller: _totalController,
-                decoration: const InputDecoration(labelText: 'TOTAL:'),
-              ),
-              // Botones en la misma línea
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+              _buildCard(
+                context,
+                title: 'Totales',
                 children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        final cotizacion = Cotizacion(
-                          id: DateTime.now().millisecondsSinceEpoch,
-                          codCotizacion: _codCotizacionController.text,
-                          cliente: _clienteController.text,
-                          tipoVehiculo: _tipoVehiculoController.text,
-                          placa: _placaController.text,
-                          marcaVehiculo: _marcaVehiculoController.text,
-                          modeloVehiculo: _modeloVehiculoController.text,
-                          empresaProveedor: _empresaProveedorController.text,
-                          rucProveedor: _rucProveedorController.text,
-                          cotProv: _cotProvController.text,
-                          proveedor: _proveedorController.text,
-                          telefonoProveedor: _telefonoProveedorController.text,
-                          marcaProducto: _marcaProductoController.text,
-                          medidaProducto: _medidaProductoController.text,
-                          descripcionProducto: _descripcionProductoController.text,
-                          precioProducto: double.parse(_precioProductoController.text),
-                          cantidadProducto: int.parse(_cantidadProductoController.text),
-                          subtotal: double.parse(_subtotalController.text),
-                          igv: double.parse(_igvController.text),
-                          total: double.parse(_totalController.text),
-                          fecha: _fecha!,
-                        );
-                        Provider.of<CotizacionProvider>(context, listen: false)
-                            .agregarCotizacion(cotizacion);
-                        _limpiarCasillas();
-                      }
-                    },
-                    child: const Text('Guardar'),
-                  ),
+                  _buildTwoFields(_subtotalController, 'Subtotal', _igvController, 'IGV'),
+                  _buildTextField(_totalController, 'Total', isNumber: true),
                 ],
               ),
+              const SizedBox(height: 20),
+              _buildButtons(context),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  /// Construye una tarjeta con título y contenido
+  Widget _buildCard(BuildContext context, {required String title, required List<Widget> children}) {
+    return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      elevation: 4,
+      margin: const EdgeInsets.only(bottom: 20),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blueAccent)),
+            const SizedBox(height: 10),
+            ...children,
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// Construye un campo de texto con diseño moderno
+  Widget _buildTextField(TextEditingController controller, String label, {bool enabled = true, bool isNumber = false}) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12.0),
+      child: TextFormField(
+        controller: controller,
+        enabled: enabled,
+        keyboardType: isNumber ? TextInputType.number : TextInputType.text,
+        decoration: InputDecoration(
+          labelText: label,
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+          filled: true,
+          fillColor: Colors.grey[100],
+        ),
+      ),
+    );
+  }
+
+  /// Construye dos campos de texto en la misma línea
+  Widget _buildTwoFields(TextEditingController controller1, String label1, TextEditingController controller2, String label2) {
+    return Row(
+      children: [
+        Expanded(child: _buildTextField(controller1, label1)),
+        const SizedBox(width: 10),
+        Expanded(child: _buildTextField(controller2, label2)),
+      ],
+    );
+  }
+
+  /// Selector de fecha con botón de calendario
+  Widget _buildDatePicker(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12.0),
+      child: GestureDetector(
+        onTap: () async {
+          final DateTime? picked = await showDatePicker(
+            context: context,
+            initialDate: DateTime.now(),
+            firstDate: DateTime(2000),
+            lastDate: DateTime.now(),
+          );
+          if (picked != null) {
+            setState(() {
+              _fecha = picked;
+            });
+          }
+        },
+        child: AbsorbPointer(
+          child: TextFormField(
+            decoration: InputDecoration(
+              labelText: _fecha != null ? 'Fecha: ${_fecha!.toLocal()}'.split(' ')[0] : 'Seleccionar Fecha',
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+              filled: true,
+              fillColor: Colors.grey[100],
+              suffixIcon: const Icon(Icons.calendar_today, color: Colors.blueAccent),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// Botones de acción estilizados
+  Widget _buildButtons(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: [
+        ElevatedButton.icon(
+          onPressed: () {
+            if (_formKey.currentState!.validate()) {
+              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Cotización Guardada')));
+              _formKey.currentState!.reset();
+            }
+          },
+          icon: const Icon(Icons.save),
+          label: const Text('Guardar'),
+          style: ElevatedButton.styleFrom(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+            backgroundColor: Colors.green,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          ),
+        ),
+      ],
     );
   }
 }
