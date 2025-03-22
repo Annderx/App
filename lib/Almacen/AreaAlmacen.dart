@@ -4,7 +4,7 @@ import 'package:myapp/Administracion/Productos/MenuNavegacionProductos.dart';
 import 'package:myapp/Almacen/Cotizacion/MenuNavegacionCotizacion.dart';
 import 'package:myapp/Almacen/EntradaSalida/MenuNavegacionAlmacenEntrada.dart';
 import 'package:myapp/Almacen/EntradaSalida/MenuNavegacionAlmacenSalida.dart';
-import 'package:myapp/Almacen/Liquidacion%20/MenuNavegacionLiquidacion.dart';
+import 'package:myapp/Almacen/Liquidacion/MenuNavegacionLiquidacion.dart';
 import 'package:myapp/Almacen/Prestamos/MenuNavegacion.dart';
 import 'package:myapp/Almacen/Proveedores/MenuNavegacionProveedores.dart';
 
