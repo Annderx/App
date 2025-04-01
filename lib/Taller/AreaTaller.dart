@@ -21,18 +21,22 @@ class AreaTaller extends StatelessWidget {
           mainAxisSpacing: 16,
           childAspectRatio: 1.3,
           children: [
-            _buildCard(context, 'Orden de Trabajo', Icons.build, const MenuOrdenesTrabajo()),
-            _buildCard(context, 'Presupuesto', Icons.request_quote, const MenuPresupuesto()),
+            _buildCard(context, 'Orden de Trabajo', Icons.build,
+                const MenuOrdenesTrabajo()),
+            _buildCard(context, 'Presupuesto', Icons.request_quote,
+                const MenuPresupuesto()),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildCard(BuildContext context, String text, IconData icon, Widget destination) {
+  Widget _buildCard(
+      BuildContext context, String text, IconData icon, Widget destination) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => destination));
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => destination));
       },
       child: Card(
         elevation: 6,
@@ -41,7 +45,10 @@ class AreaTaller extends StatelessWidget {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
             gradient: LinearGradient(
-              colors: [Colors.orangeAccent, Colors.deepOrange], // Fondo degradado
+              colors: [
+                Colors.orangeAccent,
+                Colors.deepOrange
+              ], // Fondo degradado
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
@@ -54,7 +61,10 @@ class AreaTaller extends StatelessWidget {
               Text(
                 text,
                 textAlign: TextAlign.center,
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white),
               ),
             ],
           ),

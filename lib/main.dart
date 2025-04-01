@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:myapp/pruebabd/probrarbd.dart';
 import 'package:provider/provider.dart';
 
 // Importa todos los Providers necesarios
@@ -130,6 +131,7 @@ class HomePage extends StatelessWidget {
           _buildButton(context, 'Recursos Humanos', const AreaRecursosHumanos(), Icons.person),
           _buildButton(context, 'Taller', const AreaTaller(), Icons.build),
           _buildButton(context, 'Inventario Vehicular', const InventarioVehicular(), Icons.directions_car),
+          _buildButton(context, 'Probar base de datos',const PruebaBD(), Icons.search),
         ],
       ),
     );
