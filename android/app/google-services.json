@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1048614452373",
+    "project_id": "mi-proyecto-decd4",
+    "storage_bucket": "mi-proyecto-decd4.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1048614452373:android:f9c1e41901fa5df6166f9c",
+        "android_client_info": {
+          "package_name": "com.example.myapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyARe8e-gFETYFSmjY2yZZxVobnhxPA92-8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mysql1/mysql1.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 class PruebaBD extends StatefulWidget {
   const PruebaBD({super.key});
@@ -9,29 +9,34 @@ class PruebaBD extends StatefulWidget {
 }
 
 class _PruebaBDState extends State<PruebaBD> {
-  String mensaje = "Presiona el botón para probar la conexión";
+  String mensaje = "Presiona el botón para enviar datos a Firebase";
+  bool cargando = false;
 
-  Future<void> probarConexion() async {
+  Future<void> enviarDatosAFirebase() async {
+    setState(() {
+      cargando = true;
+      mensaje = "Conectando a Firebase...";
+    });
+
     try {
-      // Configuración de la base de datos
-      final settings = ConnectionSettings(
-        host: '127.0.0.1',  // Cambia por la IP del servidor MySQL
-        port: 3306,
-        user: 'root',
-        password: '',
-        db: 'gastuloautomotriz',
-      );
+      final databaseRef = FirebaseDatabase.instance.ref();
 
-      // Conexión a la base de datos
-      final conn = await MySqlConnection.connect(settings);
-      setState(() {
-        mensaje = "Conectado a la base de datos exitosamente!";
+      // Guarda un dato de prueba
+      await databaseRef.child("pruebas").push().set({
+        "mensaje": "Hola desde Flutter a Firebase Realtime Database",
+        "timestamp": DateTime.now().toIso8601String(),
       });
 
-      await conn.close();
+      setState(() {
+        mensaje = "✅ Datos enviados exitosamente a Realtime Database.";
+      });
     } catch (e) {
       setState(() {
-        mensaje = "Error en la conexión: $e";
+        mensaje = "❌ Error al enviar datos: $e";
+      });
+    } finally {
+      setState(() {
+        cargando = false;
       });
     }
   }
@@ -39,18 +44,37 @@ class _PruebaBDState extends State<PruebaBD> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Prueba de Conexión a MySQL")),
+      appBar: AppBar(title: const Text("Prueba Firebase Realtime DB")),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(mensaje, textAlign: TextAlign.center),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: probarConexion,
-              child: Text("Probar Conexión"),
-            ),
-          ],
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              cargando
+                  ? const CircularProgressIndicator()
+                  : Icon(
+                      mensaje.contains("Error") ? Icons.error : Icons.cloud_done,
+                      color: mensaje.contains("Error") ? Colors.red : Colors.green,
+                      size: 60,
+                    ),
+              const SizedBox(height: 20),
+              Text(
+                mensaje,
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 16),
+              ),
+              const SizedBox(height: 30),
+              ElevatedButton.icon(
+                icon: const Icon(Icons.cloud_upload),
+                label: const Text("Enviar a Firebase"),
+                onPressed: cargando ? null : enviarDatosAFirebase,
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

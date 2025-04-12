@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:myapp/pruebabd/probrarbd.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
 
-// Importa todos los Providers necesarios
+// Importa tus Providers
 import 'Administracion/Clientes/cliente_provider.dart';
 import 'Administracion/Empleados/empleado_provider.dart';
 import 'Administracion/EntradaSalida/entrada_provider.dart';
@@ -14,14 +15,17 @@ import 'Administracion/Productos/productos_provider.dart';
 import 'Administracion/Usuarios/usuarios_provider.dart';
 import 'Administracion/Vehiculos/vehiculos_provider.dart';
 
-// Importa todas las áreas
+// Importa tus Áreas
 import 'Administracion/AreaAdministrativa.dart';
 import 'Almacen/AreaAlmacen.dart';
 import 'RRHH/AreaRecursosHumanos.dart';
 import 'Taller/AreaTaller.dart';
 import 'InventarioVehiculos/Vehiculos.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(); // 🔥 Inicializa Firebase
+
   runApp(
     MultiProvider(
       providers: [
@@ -131,7 +135,7 @@ class HomePage extends StatelessWidget {
           _buildButton(context, 'Recursos Humanos', const AreaRecursosHumanos(), Icons.person),
           _buildButton(context, 'Taller', const AreaTaller(), Icons.build),
           _buildButton(context, 'Inventario Vehicular', const InventarioVehicular(), Icons.directions_car),
-          _buildButton(context, 'Probar base de datos',const PruebaBD(), Icons.search),
+          _buildButton(context, 'Probar base de datos', const PruebaBD(), Icons.search),
         ],
       ),
     );
@@ -156,6 +160,41 @@ class HomePage extends StatelessWidget {
           const SizedBox(height: 8),
           Text(text, textAlign: TextAlign.center),
         ],
+      ),
+    );
+  }
+}
+
+class PruebaBD extends StatelessWidget {
+  const PruebaBD({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final db = FirebaseFirestore.instance;
+
+    return Scaffold(
+      appBar: AppBar(title: const Text('Probar BD Firebase')),
+      body: Center(
+        child: ElevatedButton.icon(
+          icon: const Icon(Icons.cloud_upload),
+          label: const Text('Enviar prueba a Firestore'),
+          onPressed: () async {
+            try {
+              await db.collection('pruebas').add({
+                'mensaje': 'Hola Firebase desde Flutter',
+                'timestamp': DateTime.now(),
+              });
+
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('✅ Datos enviados a Firestore')),
+              );
+            } catch (e) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('❌ Error: $e')),
+              );
+            }
+          },
+        ),
       ),
     );
   }
